@@ -3,6 +3,9 @@
 **Group 22:**<br>
 Matthew K<br>
 Julio N<br>
+Since we're a pretty small group we're both going to be working on a little bit of everything.<br>
+Julio: Mostly gameplay<br>
+Matthew: Systems and models/art<br>
 
 # Game Name: Chance
 
