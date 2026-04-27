@@ -10,6 +10,9 @@ public class PlayerLook : MonoBehaviour
     private float xRotation = 0f;
     private Vector2 lookInput;
 
+    // Recoil offset added on top of normal look rotation
+    private float recoilX = 0f;
+
     void Start()
     {
         // Locks the cursor to the center of the screen and hides it
@@ -28,20 +31,25 @@ public class PlayerLook : MonoBehaviour
     }
 
     void Look()
+{
+    float mouseX = lookInput.x * mouseSensitivity * Time.deltaTime;
+    float mouseY = lookInput.y * mouseSensitivity * Time.deltaTime;
+
+    xRotation -= mouseY;
+    xRotation = Mathf.Clamp(xRotation, -90f, 90f);
+
+    // Smoothly recover recoil back to zero over time
+    recoilX = Mathf.Lerp(recoilX, 0f, 8f * Time.deltaTime);
+
+    // Apply BOTH mouse look and recoil offset to camera
+    playerCamera.localRotation = Quaternion.Euler(xRotation + recoilX, 0f, 0f);
+
+    transform.Rotate(Vector3.up * mouseX);
+}
+
+    // Called by Weapon.cs to add upward camera kick
+    public void AddRecoil(float amount)
     {
-        // Calculate mouse movement
-        float mouseX = lookInput.x * mouseSensitivity * Time.deltaTime;
-        float mouseY = lookInput.y * mouseSensitivity * Time.deltaTime;
-
-        // Calculate vertical rotation (Up/Down)
-        xRotation -= mouseY;
-        // Clamp rotation so you can't flip your head upside down (90 degrees up or down)
-        xRotation = Mathf.Clamp(xRotation, -90f, 90f);
-
-        // Apply vertical rotation to the CAMERA
-        playerCamera.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
-
-        // Apply horizontal rotation to the PLAYER BODY (Left/Right)
-        transform.Rotate(Vector3.up * mouseX);
+        recoilX -= amount;
     }
 }

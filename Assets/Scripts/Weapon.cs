@@ -2,31 +2,60 @@ using UnityEngine;
 
 public class Weapon : MonoBehaviour
 {
-    // ─WEAPON IDENTITY─
+    // WEAPON IDENTITY
     public string weaponName;
     public float fireRate = 0.15f;
     public float range = 100f;
     public int damage = 10;
 
-    // ─AMMO─
-    public int maxAmmo = 30;        // Max ammo per magazine
-    public int currentAmmo;         // Current ammo in magazine
-    public float reloadTime = 2f;   // How long reload takes in seconds
-    public bool isReloading = false; // True while reload animation is playing
+    // AMMO
+    public int maxAmmo = 30;
+    public int currentAmmo;
+    public float reloadTime = 2f;
+    public bool isReloading = false;
+
+    // RECOIL SETTINGS
+    [Header("Recoil")]
+    public float recoilUp = 2f;        // How much camera kicks upward
+    public float recoilSide = 0.5f;    // How much camera kicks sideways
+    public float recoilReturn = 5f;    // How fast camera returns to original position
+    public float weaponKickBack = 0.1f; // How far gun model kicks back
+    public float weaponKickReturn = 8f; // How fast gun model returns
 
     [Header("Effects")]
     public ParticleSystem muzzleFlash;
     public GameObject hitEffectPrefab;
 
+    private Vector3 weaponOriginalPosition;
+    private PlayerLook playerLook;
+
+
     void Start()
+{
+    currentAmmo = maxAmmo;
+    weaponOriginalPosition = transform.localPosition;
+
+    // Find RecoilController directly in the scene instead of via Camera.main
+    playerLook = FindFirstObjectByType<PlayerLook>();
+
+    if (playerLook == null)
+        Debug.LogError("PlayerLook not found in scene!");
+}
+
+    void Update()
     {
-        // Start with a full magazine
-        currentAmmo = maxAmmo;
+        // Smoothly return gun model to original position after kick
+        transform.localPosition = Vector3.Lerp(
+            transform.localPosition,
+            weaponOriginalPosition,
+            weaponKickReturn * Time.deltaTime
+        );
     }
+
+    // PUBLIC METHODS
 
     public bool CanFire()
     {
-        // Can only fire if not reloading and has ammo
         return !isReloading && currentAmmo > 0;
     }
 
@@ -34,14 +63,15 @@ public class Weapon : MonoBehaviour
     {
         if (!CanFire()) return;
 
-        // Decrement ammo
         currentAmmo--;
 
-        // Play muzzle flash if assigned
+        // Apply recoil
+        ApplyRecoil();
+
+        // Play muzzle flash
         if (muzzleFlash != null) muzzleFlash.Play();
 
-        // Raycast from the center of the screen
-        // Viewport (0.5, 0.5) is the dead center of the players view
+        // Raycast from center of screen
         Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
         RaycastHit hit;
 
@@ -49,28 +79,21 @@ public class Weapon : MonoBehaviour
         {
             Debug.Log("Hit: " + hit.transform.name);
 
-            // Spawn hit effect if assigned
             if (hitEffectPrefab != null)
                 Instantiate(hitEffectPrefab, hit.point, Quaternion.LookRotation(hit.normal));
-
-            // Deal damage if target has a health component
-
         }
 
-        // Auto reload if magazine is empty after firing
+        // Auto reload when empty
         if (currentAmmo <= 0)
             StartReload();
     }
 
     public void StartReload()
     {
-        // Don't reload if already reloading or magazine is full
         if (isReloading || currentAmmo == maxAmmo) return;
 
         Debug.Log("Reloading " + weaponName + "...");
         isReloading = true;
-
-        // Wait for reload time then finish reload
         Invoke(nameof(FinishReload), reloadTime);
     }
 
@@ -80,4 +103,16 @@ public class Weapon : MonoBehaviour
         isReloading = false;
         Debug.Log(weaponName + " reloaded!");
     }
+
+    // PRIVATE METHODS
+
+    void ApplyRecoil()
+{
+    // Kick gun model backward
+    transform.localPosition -= Vector3.forward * weaponKickBack;
+
+    // Add recoil to the camera via PlayerLook
+    if (playerLook != null)
+        playerLook.AddRecoil(recoilUp);
+}
 }
