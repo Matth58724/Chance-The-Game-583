@@ -3,20 +3,19 @@ using System.Collections;
 
 public class EnemyHealth : MonoBehaviour
 {
-    // ── HEALTH SETTINGS ──────────────────────────────────────────
+    // HEALTH SETTINGS
     public int maxHealth = 100;          // Maximum health
     public int currentHealth;            // Current health
 
-    // ── HIT BLINK ────────────────────────────────────────────────
+    // HIT BLINK 
     public Material hitMat;              // White flash material
     private Renderer rend;
     private Material originalMaterial;
 
-    // ── PRIVATE REFS ─────────────────────────────────────────────
+
     private Rigidbody rb;
     private Enemy enemyAI;              // Reference to AI script to disable on death
 
-    // ── UNITY METHODS ────────────────────────────────────────────
 
     void Start()
     {
@@ -32,7 +31,6 @@ public class EnemyHealth : MonoBehaviour
         originalMaterial = rend.material;
     }
 
-    // ── PUBLIC METHODS ───────────────────────────────────────────
 
     // Called by Weapon.cs when raycast hits this enemy
     public void TakeDamage(int damage)
@@ -48,7 +46,6 @@ public class EnemyHealth : MonoBehaviour
             StartCoroutine(Blink());
     }
 
-    // ── PRIVATE METHODS ──────────────────────────────────────────
 
     void Die()
     {

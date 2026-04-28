@@ -5,41 +5,38 @@ using System.Collections.Generic;
 
 public class Enemy : MonoBehaviour
 {
-    // ── AI SETTINGS ──────────────────────────────────────────────
+    // AI SETTINGS
     public int currentPointIndex = 0;        // Index of current patrol point
     public Vector3 currentTarget;            // World position enemy is moving toward
     public float positionThreshold = 2f;     // Distance to consider patrol point reached
     public float idleTime = 5f;              // Seconds to idle before patrolling again
     public float attackDistance = 5f;        // Distance at which enemy stops and attacks
     public float maxVisionDistance = 20f;    // Max distance enemy can detect player
-    public float minimumChasingHealth = 30f; // Below this health enemy flees
+
     public Transform[] patrolPoints;         // Patrol points assigned in Inspector
 
-    // ── REFERENCES ───────────────────────────────────────────────
+    // REFERENCES
     private NavMeshAgent agent;
     private Rigidbody rb;
     private Transform playerTransform;
-    private EnemyHealth enemyHealth;         // Reference to health script for flee logic
 
-    // ── VISION STATE ─────────────────────────────────────────────
+    // VISION STATE
     private bool canSeePlayer;
     private Vector3 lastKnownPlayerPosition;
 
-    // ── IDLE TIMER ───────────────────────────────────────────────
+    // IDLE TIMER
     private float idleTimeCounter;
 
-    // ── STATE MACHINE ────────────────────────────────────────────
+    // STATE MACHINE
     public enum State { Idle, Patrolling, Chasing, Attacking }
     public State state = State.Patrolling;
 
-    // ── UNITY METHODS ────────────────────────────────────────────
 
     void Start()
     {
         // Cache components
         rb = GetComponent<Rigidbody>();
         agent = GetComponent<NavMeshAgent>();
-        enemyHealth = GetComponent<EnemyHealth>();
 
         // Start idle timer at full
         idleTimeCounter = idleTime;
@@ -88,7 +85,6 @@ public class Enemy : MonoBehaviour
         SetLastKnownPlayerPosition();
     }
 
-    // ── STATE FUNCTIONS ──────────────────────────────────────────
 
     void Idle()
     {
@@ -110,11 +106,10 @@ public class Enemy : MonoBehaviour
     {
         if (patrolPoints.Length == 0) return;
 
-        // Initialize current target if it hasn't been set yet
+        // Initialize current target if not set yet
         if (currentTarget == Vector3.zero)
             currentTarget = patrolPoints[0].position;
 
-            
         // Check if close enough to current patrol target
         if (Vector3.Distance(currentTarget, transform.position) < positionThreshold)
         {
@@ -145,13 +140,8 @@ public class Enemy : MonoBehaviour
         // Move toward last known player position
         agent.SetDestination(lastKnownPlayerPosition);
 
-        // Flee if health is critically low
-        if (enemyHealth != null && enemyHealth.currentHealth < minimumChasingHealth)
-        {
-            state = State.Patrolling;
-        }
         // Attack if close enough and has line of sight
-        else if (Vector3.Distance(transform.position, playerTransform.position)
+        if (Vector3.Distance(transform.position, playerTransform.position)
                  <= attackDistance && canSeePlayer)
         {
             state = State.Attacking;
@@ -178,21 +168,15 @@ public class Enemy : MonoBehaviour
         // Stand still while attacking
         agent.ResetPath();
 
-        // TODO: Enemy shooting logic goes here in Step 6
-
         // If player moved out of range or out of sight switch to chasing
         if (Vector3.Distance(transform.position, playerTransform.position)
             > attackDistance || !canSeePlayer)
         {
-            // Flee if low health otherwise chase
-            if (enemyHealth != null && enemyHealth.currentHealth < minimumChasingHealth)
-                state = State.Patrolling;
-            else
-                state = State.Chasing;
+            state = State.Chasing;
         }
     }
 
-    // ── VISION ───────────────────────────────────────────────────
+    // VISION
 
     void LookForPlayer()
     {
