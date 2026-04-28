@@ -79,8 +79,14 @@ public class Weapon : MonoBehaviour
         {
             Debug.Log("Hit: " + hit.transform.name);
 
+            // Spawn hit effect where bullet lands
             if (hitEffectPrefab != null)
                 Instantiate(hitEffectPrefab, hit.point, Quaternion.LookRotation(hit.normal));
+
+            // Deal damage if target has EnemyHealth component
+            EnemyHealth enemyHealth = hit.transform.GetComponent<EnemyHealth>();
+            if (enemyHealth != null)
+                enemyHealth.TakeDamage(damage);
         }
 
         // Auto reload when empty
