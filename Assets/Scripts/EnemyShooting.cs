@@ -43,13 +43,9 @@ public class EnemyShooting : MonoBehaviour
 
     // ── PRIVATE METHODS ──────────────────────────────────────────
 
-    void Shoot()
+void Shoot()
     {
         nextFireTime = Time.time + fireRate;
-
-        // Spawn muzzle flash at barrel tip if assigned
-        if (weaponFlashPrefab != null && bulletSpawnPoint != null)
-            Instantiate(weaponFlashPrefab, bulletSpawnPoint.position, bulletSpawnPoint.rotation);
 
         // Direction from enemy to player
         Vector3 directionToPlayer = (playerTransform.position - transform.position).normalized;

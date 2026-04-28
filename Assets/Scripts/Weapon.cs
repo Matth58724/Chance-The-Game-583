@@ -24,6 +24,7 @@ public class Weapon : MonoBehaviour
     // ── EFFECTS ──────────────────────────────────────────────────
     [Header("Effects")]
     public GameObject weaponFlashPrefab;  // Point light prefab to spawn on fire
+    public GameObject muzzleFlashVFX; // Particle effect prefab for visual flash
     public Transform bulletSpawnPoint;    // Where flash spawns — barrel tip
 
     // ── PRIVATE STATE ────────────────────────────────────────────
@@ -41,16 +42,6 @@ void Start()
         playerLook = FindFirstObjectByType<PlayerLook>();
         if (playerLook == null)
             Debug.LogError("PlayerLook not found!");
-
-        // Auto-find BulletSpawnPoint child if not manually assigned
-        if (bulletSpawnPoint == null)
-        {
-            Transform found = transform.Find("BulletSpawnPoint");
-            if (found != null)
-                bulletSpawnPoint = found;
-            else
-                Debug.LogWarning("BulletSpawnPoint not found on " + weaponName);
-        }
     }
 
     void Update()
@@ -79,10 +70,6 @@ public void Fire()
 
         // Apply camera and weapon recoil
         ApplyRecoil();
-
-        // Spawn muzzle flash at barrel tip
-        if (weaponFlashPrefab != null && bulletSpawnPoint != null)
-            Instantiate(weaponFlashPrefab, bulletSpawnPoint.position, bulletSpawnPoint.rotation);
 
         // Raycast from center of screen for hit detection
         Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
