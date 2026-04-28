@@ -2,22 +2,26 @@ using UnityEngine;
 
 public class EnemyShooting : MonoBehaviour
 {
-    // SETTINGS
+    // ── SETTINGS ─────────────────────────────────────────────────
     public int damage = 10;              // Damage dealt per shot
     public float fireRate = 1.5f;        // Seconds between shots
     public float shootingRange = 5f;     // Max range enemy can hit player
 
-    // PRIVATE STATE
-    private float nextFireTime = 0f;     // Time when enemy can fire next
-    private Enemy enemyAI;               // Reference to AI to check attack state
-    private Transform playerTransform;   // Reference to player position
+    // ── EFFECTS ──────────────────────────────────────────────────
+    public GameObject weaponFlashPrefab; // Muzzle flash prefab
+    public Transform bulletSpawnPoint;   // Barrel tip of enemy weapon
+
+    // ── PRIVATE STATE ────────────────────────────────────────────
+    private float nextFireTime = 0f;
+    private Enemy enemyAI;
+    private Transform playerTransform;
+
+    // ── UNITY METHODS ────────────────────────────────────────────
 
     void Start()
     {
-        // Cache references
         enemyAI = GetComponent<Enemy>();
 
-        // Find player by tag
         GameObject playerObj = GameObject.FindWithTag("Player");
         if (playerObj != null)
             playerTransform = playerObj.transform;
@@ -34,14 +38,18 @@ public class EnemyShooting : MonoBehaviour
         // Check fire rate cooldown
         if (Time.time < nextFireTime) return;
 
-        // Shoot at player
         Shoot();
     }
 
+    // ── PRIVATE METHODS ──────────────────────────────────────────
 
     void Shoot()
     {
         nextFireTime = Time.time + fireRate;
+
+        // Spawn muzzle flash at barrel tip if assigned
+        if (weaponFlashPrefab != null && bulletSpawnPoint != null)
+            Instantiate(weaponFlashPrefab, bulletSpawnPoint.position, bulletSpawnPoint.rotation);
 
         // Direction from enemy to player
         Vector3 directionToPlayer = (playerTransform.position - transform.position).normalized;
@@ -50,7 +58,6 @@ public class EnemyShooting : MonoBehaviour
         if (Physics.Raycast(transform.position, directionToPlayer,
             out RaycastHit hit, shootingRange))
         {
-            // Check if ray hit the player
             PlayerHealth playerHealth = hit.transform.GetComponent<PlayerHealth>();
             if (playerHealth != null)
             {

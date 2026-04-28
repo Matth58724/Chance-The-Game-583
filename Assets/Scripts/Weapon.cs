@@ -1,46 +1,57 @@
 using UnityEngine;
+using System.Collections;
 
 public class Weapon : MonoBehaviour
 {
-    // WEAPON IDENTITY
+    // ── WEAPON IDENTITY ──────────────────────────────────────────
     public string weaponName;
     public float fireRate = 0.15f;
     public float range = 100f;
     public int damage = 10;
 
-    // AMMO
+    // ── AMMO ─────────────────────────────────────────────────────
     public int maxAmmo = 30;
     public int currentAmmo;
     public float reloadTime = 2f;
     public bool isReloading = false;
 
-    // RECOIL SETTINGS
+    // ── RECOIL SETTINGS ──────────────────────────────────────────
     [Header("Recoil")]
-    public float recoilUp = 2f;        // How much camera kicks upward
-    public float recoilSide = 0.5f;    // How much camera kicks sideways
-    public float recoilReturn = 5f;    // How fast camera returns to original position
-    public float weaponKickBack = 0.1f; // How far gun model kicks back
-    public float weaponKickReturn = 8f; // How fast gun model returns
+    public float recoilUp = 2f;
+    public float weaponKickBack = 0.1f;
+    public float weaponKickReturn = 8f;
 
+    // ── EFFECTS ──────────────────────────────────────────────────
     [Header("Effects")]
-    public ParticleSystem muzzleFlash;
-    public GameObject hitEffectPrefab;
+    public GameObject weaponFlashPrefab;  // Point light prefab to spawn on fire
+    public Transform bulletSpawnPoint;    // Where flash spawns — barrel tip
 
+    // ── PRIVATE STATE ────────────────────────────────────────────
     private Vector3 weaponOriginalPosition;
     private PlayerLook playerLook;
 
+    // ── UNITY METHODS ────────────────────────────────────────────
 
-    void Start()
-{
-    currentAmmo = maxAmmo;
-    weaponOriginalPosition = transform.localPosition;
+void Start()
+    {
+        currentAmmo = maxAmmo;
+        weaponOriginalPosition = transform.localPosition;
 
-    // Find RecoilController directly in the scene instead of via Camera.main
-    playerLook = FindFirstObjectByType<PlayerLook>();
+        // Find PlayerLook for camera recoil
+        playerLook = FindFirstObjectByType<PlayerLook>();
+        if (playerLook == null)
+            Debug.LogError("PlayerLook not found!");
 
-    if (playerLook == null)
-        Debug.LogError("PlayerLook not found in scene!");
-}
+        // Auto-find BulletSpawnPoint child if not manually assigned
+        if (bulletSpawnPoint == null)
+        {
+            Transform found = transform.Find("BulletSpawnPoint");
+            if (found != null)
+                bulletSpawnPoint = found;
+            else
+                Debug.LogWarning("BulletSpawnPoint not found on " + weaponName);
+        }
+    }
 
     void Update()
     {
@@ -52,36 +63,34 @@ public class Weapon : MonoBehaviour
         );
     }
 
-    // PUBLIC METHODS
+    // ── PUBLIC METHODS ───────────────────────────────────────────
 
     public bool CanFire()
     {
+        // Can only fire if not reloading and has ammo
         return !isReloading && currentAmmo > 0;
     }
 
-    public void Fire()
+public void Fire()
     {
         if (!CanFire()) return;
 
         currentAmmo--;
 
-        // Apply recoil
+        // Apply camera and weapon recoil
         ApplyRecoil();
 
-        // Play muzzle flash
-        if (muzzleFlash != null) muzzleFlash.Play();
+        // Spawn muzzle flash at barrel tip
+        if (weaponFlashPrefab != null && bulletSpawnPoint != null)
+            Instantiate(weaponFlashPrefab, bulletSpawnPoint.position, bulletSpawnPoint.rotation);
 
-        // Raycast from center of screen
+        // Raycast from center of screen for hit detection
         Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
         RaycastHit hit;
 
         if (Physics.Raycast(ray, out hit, range))
         {
             Debug.Log("Hit: " + hit.transform.name);
-
-            // Spawn hit effect where bullet lands
-            if (hitEffectPrefab != null)
-                Instantiate(hitEffectPrefab, hit.point, Quaternion.LookRotation(hit.normal));
 
             // Deal damage if target has EnemyHealth component
             EnemyHealth enemyHealth = hit.transform.GetComponent<EnemyHealth>();
@@ -103,22 +112,22 @@ public class Weapon : MonoBehaviour
         Invoke(nameof(FinishReload), reloadTime);
     }
 
+    // ── PRIVATE METHODS ──────────────────────────────────────────
+
+    void ApplyRecoil()
+    {
+        // Kick gun model backward
+        transform.localPosition -= Vector3.forward * weaponKickBack;
+
+        // Add upward camera kick via PlayerLook
+        if (playerLook != null)
+            playerLook.AddRecoil(recoilUp);
+    }
+
     void FinishReload()
     {
         currentAmmo = maxAmmo;
         isReloading = false;
         Debug.Log(weaponName + " reloaded!");
     }
-
-    // PRIVATE METHODS
-
-    void ApplyRecoil()
-{
-    // Kick gun model backward
-    transform.localPosition -= Vector3.forward * weaponKickBack;
-
-    // Add recoil to the camera via PlayerLook
-    if (playerLook != null)
-        playerLook.AddRecoil(recoilUp);
-}
 }
