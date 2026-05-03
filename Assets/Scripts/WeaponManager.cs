@@ -9,6 +9,25 @@ public class WeaponManager : MonoBehaviour
     public List<WeaponData> inventory = new List<WeaponData>();
     public Transform weaponHolder;
 
+    // Engrams
+    [Header("Engram Inventory")]
+    public List<EngramData> engramInventory = new List<EngramData>();
+    public int maxEngramSlots = 5;
+
+    public bool AddEngram(EngramData newEngram)
+    {
+        if (engramInventory.Count < maxEngramSlots)
+        {
+            engramInventory.Add(newEngram);
+            Debug.Log($"Acquired {newEngram.engramName} Engram!");
+            return true;
+        }
+        Debug.Log("Engram inventory full!");
+        return false;
+    }
+
+
+
     // CURRENT STATE
     public Weapon currentWeapon;
     private int currentWeaponIndex = 0;

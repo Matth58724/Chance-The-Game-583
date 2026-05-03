@@ -16,6 +16,11 @@ public class EnemyHealth : MonoBehaviour
     private Rigidbody rb;
     private Enemy enemyAI;              // Reference to AI script to disable on death
 
+    // Engram Drops
+    public GameObject engramPickupPrefab; // A physical loot crate/orb
+    public EngramData engramToDrop;
+    [Range(0, 100)] public float dropChance = 25f;
+
 
     void Start()
     {
@@ -68,6 +73,20 @@ public class EnemyHealth : MonoBehaviour
 
         // Destroy after 3 seconds to clean up scene
         Destroy(gameObject, 3f);
+
+        // Engram Drop Chance
+        if (Random.Range(0f, 100f) <= dropChance && engramToDrop != null)
+        {
+            Vector3 spawnPos = transform.position + Vector3.up * 1.5f; // Spawn slightly above the enemy's feet
+            GameObject drop = Instantiate(engramPickupPrefab, spawnPos, Quaternion.identity);
+
+            // PASS THE DATA TO THE PICKUP SCRIPT
+            EngramPickup pickupScript = drop.GetComponent<EngramPickup>();
+            if (pickupScript != null)
+            {
+                pickupScript.engramData = engramToDrop;
+            }
+        }
     }
 
     IEnumerator Blink()
@@ -79,4 +98,5 @@ public class EnemyHealth : MonoBehaviour
         // Restore original material
         rend.material = originalMaterial;
     }
+
 }

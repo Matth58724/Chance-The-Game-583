@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ce968413ee75524aa6453322251fdfc, type: 3}
+  m_Name: Common Engram
+  m_EditorClassIdentifier: Assembly-CSharp::EngramData
+  engramName: Common
+  tier: 0
+  engramColor: {r: 1, g: 1, b: 1, a: 0}
+  possibleDrops:
+  - {fileID: 11400000, guid: 56d56c730a541364a83b7ec115008da4, type: 2}
+  - {fileID: 11400000, guid: 771b6e8aa40a1d14b850b6291367c5b9, type: 2}
+  - {fileID: 11400000, guid: 707524199700f9040847aec6e5344564, type: 2}
+  - {fileID: 11400000, guid: de31d4581efbd434c9db11038a121c83, type: 2}
