@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7ce968413ee75524aa6453322251fdfc, type: 3}
-  m_Name: Uncommon Engram
+  m_Name: UltraRare Engram
   m_EditorClassIdentifier: Assembly-CSharp::EngramData
-  engramName: Uncommon
-  engramIcon: {fileID: 21300000, guid: 5eb7f117ed18a9f4998b0a000c38ac75, type: 3}
-  tier: 1
-  engramColor: {r: 0, g: 1, b: 0, a: 0}
+  engramName: Ultra Rare
+  engramIcon: {fileID: 21300000, guid: b1ccd762dfe56f149b45741444bd7c0d, type: 3}
+  tier: 3
+  engramColor: {r: 1, g: 0, b: 1, a: 0}
   possibleDrops: []

@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Pistol_Starter
   m_EditorClassIdentifier: Assembly-CSharp::WeaponData
   weaponName: Starter Pistol
+  weaponIcon: {fileID: 21300000, guid: 2af3a0cc387866547b1b72fadd401378, type: 3}
   modelPrefab: {fileID: 7785790170610667721, guid: c07318f8195e16b4eaa6d9500119965e, type: 3}
   rarity: 0
   rarityColor: {r: 1, g: 1, b: 1, a: 0}

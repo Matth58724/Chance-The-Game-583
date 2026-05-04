@@ -5,6 +5,7 @@ public class WeaponData : ScriptableObject
 {
     [Header("Visuals")]
     public string weaponName;
+    public Sprite weaponIcon; // This is 2D picture for the inventory
     public GameObject modelPrefab; // 3D gun model
 
     [Header("Rarity Settings")]

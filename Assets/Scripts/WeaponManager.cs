@@ -8,6 +8,7 @@ public class WeaponManager : MonoBehaviour
     // Stores WeaponData blueprints for all collected weapons
     public List<WeaponData> inventory = new List<WeaponData>();
     public Transform weaponHolder;
+    public WeaponData startingWeapon;
 
     // Engrams
     [Header("Engram Inventory")]
@@ -39,6 +40,19 @@ public class WeaponManager : MonoBehaviour
     {
         if (inventory.Count > 0)
             EquipWeapon(0);
+
+        // Add the starting weapon to the list so the UI can see it
+        //if (startingWeapon != null && !inventory.Contains(startingWeapon))
+        //{
+        //    inventory.Add(startingWeapon);
+        //}
+    }
+    void Awake() // Changed from Start
+    {
+        if (startingWeapon != null && !inventory.Contains(startingWeapon))
+        {
+            inventory.Add(startingWeapon);
+        }
     }
 
     void Update()

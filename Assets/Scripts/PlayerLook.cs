@@ -21,6 +21,8 @@ public class PlayerLook : MonoBehaviour
 
     void Update()
     {
+        // If the inventory is open, do NOT process mouse movement
+        if (InventoryUI.isInventoryOpen) return;
         Look();
     }
 
@@ -31,21 +33,21 @@ public class PlayerLook : MonoBehaviour
     }
 
     void Look()
-{
-    float mouseX = lookInput.x * mouseSensitivity * Time.deltaTime;
-    float mouseY = lookInput.y * mouseSensitivity * Time.deltaTime;
+    {
+        float mouseX = lookInput.x * mouseSensitivity * Time.deltaTime;
+        float mouseY = lookInput.y * mouseSensitivity * Time.deltaTime;
 
-    xRotation -= mouseY;
-    xRotation = Mathf.Clamp(xRotation, -90f, 90f);
+        xRotation -= mouseY;
+        xRotation = Mathf.Clamp(xRotation, -90f, 90f);
 
-    // Smoothly recover recoil back to zero over time
-    recoilX = Mathf.Lerp(recoilX, 0f, 8f * Time.deltaTime);
+        // Smoothly recover recoil back to zero over time
+        recoilX = Mathf.Lerp(recoilX, 0f, 8f * Time.deltaTime);
 
-    // Apply BOTH mouse look and recoil offset to camera
-    playerCamera.localRotation = Quaternion.Euler(xRotation + recoilX, 0f, 0f);
+        // Apply BOTH mouse look and recoil offset to camera
+        playerCamera.localRotation = Quaternion.Euler(xRotation + recoilX, 0f, 0f);
 
-    transform.Rotate(Vector3.up * mouseX);
-}
+        transform.Rotate(Vector3.up * mouseX);
+    }
 
     // Called by Weapon.cs to add upward camera kick
     public void AddRecoil(float amount)
