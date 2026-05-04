@@ -37,25 +37,39 @@ public class InventoryUI : MonoBehaviour
 
     void RefreshUI()
     {
-        // Clear the grids
-        foreach (Transform child in weaponGrid)
-        {
-            Destroy(child.gameObject);
-        }
+        // Clear both grids so we don't get duplicates
+        foreach (Transform child in weaponGrid) Destroy(child.gameObject);
+        foreach (Transform child in engramGrid) Destroy(child.gameObject);
 
-        // Loop through the actual live inventory
+        // Spawn Weapons into the Weapon Grid
         foreach (WeaponData wep in playerWeaponManager.inventory)
         {
             if (wep != null)
             {
                 GameObject slot = Instantiate(slotPrefab, weaponGrid);
-                slot.GetComponent<InventorySlot>().Setup(wep);
+                slot.GetComponent<InventorySlot>().Setup(wep); // Calls the Weapon version
             }
         }
 
-        // Force the UI to refresh its layout
+        // Spawn Engrams into the Engram Grid
+        foreach (EngramData eng in playerWeaponManager.engramInventory)
+        {
+            if (eng != null)
+            {
+                GameObject slot = Instantiate(slotPrefab, engramGrid);
+                slot.GetComponent<InventorySlot>().Setup(eng); // Calls the Engram version
+            }
+        }
+
+        // Clean up layout
         Canvas.ForceUpdateCanvases();
         weaponGrid.GetComponent<UnityEngine.UI.LayoutGroup>().enabled = false;
         weaponGrid.GetComponent<UnityEngine.UI.LayoutGroup>().enabled = true;
+
+        if (engramGrid.GetComponent<UnityEngine.UI.LayoutGroup>() != null)
+        {
+            engramGrid.GetComponent<UnityEngine.UI.LayoutGroup>().enabled = false;
+            engramGrid.GetComponent<UnityEngine.UI.LayoutGroup>().enabled = true;
+        }
     }
 }

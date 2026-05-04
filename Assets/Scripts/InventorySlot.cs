@@ -23,6 +23,6 @@ public class InventorySlot : MonoBehaviour
     {
         nameText.text = data.engramName;
         iconImage.sprite = data.engramIcon; // Shows the engram PNG
-        iconImage.color = data.engramColor; // Optional: Tint it white/green/blue
+        //iconImage.color = data.engramColor; // Optional: Tint it white/green/blue
     }
 }
