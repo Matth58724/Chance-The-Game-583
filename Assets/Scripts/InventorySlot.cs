@@ -2,27 +2,63 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+
+using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
+
 public class InventorySlot : MonoBehaviour
 {
+    // ── REFERENCES ───────────────────────────────────────────────
     public TextMeshProUGUI nameText;
     public Image iconImage;
+    public TextMeshProUGUI stackText; // Shows count e.g. "x3"
 
+    // ── SETUP FOR WEAPONS ────────────────────────────────────────
     public void Setup(WeaponData data)
     {
         if (data == null)
         {
-            Debug.LogError("Slot received NULL data!");
+            Debug.LogError("Slot received NULL WeaponData!");
             return;
         }
-        Debug.Log("Setting up slot for: " + data.weaponName);
         nameText.text = data.weaponName;
-        iconImage.sprite = data.weaponIcon; // Shows the weapon PNG
+        iconImage.sprite = data.weaponIcon;
+        iconImage.color = Color.white;
+
+        // Weapons don't stack so hide stack text
+        if (stackText != null)
+            stackText.gameObject.SetActive(false);
     }
 
-    public void Setup(EngramData data)
+    // ── SETUP FOR ENGRAMS ────────────────────────────────────────
+    public void SetupEngram(EngramData data, int count = 1)
     {
+        if (data == null)
+        {
+            Debug.LogError("Slot received NULL EngramData!");
+            return;
+        }
+
         nameText.text = data.engramName;
-        iconImage.sprite = data.engramIcon; // Shows the engram PNG
-        //iconImage.color = data.engramColor; // Optional: Tint it white/green/blue
+
+        // Use sprite if assigned, otherwise solid color block
+        if (data.engramIcon != null)
+        {
+            iconImage.sprite = data.engramIcon;
+            iconImage.color = Color.white;
+        }
+        else
+        {
+            iconImage.sprite = null;
+            iconImage.color = data.engramColor;
+        }
+
+        // Show stack count if more than one
+        if (stackText != null)
+        {
+            stackText.gameObject.SetActive(count > 1);
+            stackText.text = "x" + count;
+        }
     }
 }

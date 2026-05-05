@@ -35,33 +35,48 @@ public class InventoryUI : MonoBehaviour
         if (isOpen) RefreshUI();
     }
 
-    void RefreshUI()
+void RefreshUI()
     {
-        // Clear both grids so we don't get duplicates
+        // Clear both grids to avoid duplicates
         foreach (Transform child in weaponGrid) Destroy(child.gameObject);
         foreach (Transform child in engramGrid) Destroy(child.gameObject);
 
-        // Spawn Weapons into the Weapon Grid
+        // Spawn weapons into weapon grid
         foreach (WeaponData wep in playerWeaponManager.inventory)
         {
             if (wep != null)
             {
                 GameObject slot = Instantiate(slotPrefab, weaponGrid);
-                slot.GetComponent<InventorySlot>().Setup(wep); // Calls the Weapon version
+                slot.GetComponent<InventorySlot>().Setup(wep);
             }
         }
 
-        // Spawn Engrams into the Engram Grid
+        // Group engrams by name so duplicates stack into one slot
+        Dictionary<string, (EngramData data, int count)> engramStacks =
+            new Dictionary<string, (EngramData, int)>();
+
         foreach (EngramData eng in playerWeaponManager.engramInventory)
         {
-            if (eng != null)
+            if (eng == null) continue;
+            if (engramStacks.ContainsKey(eng.engramName))
             {
-                GameObject slot = Instantiate(slotPrefab, engramGrid);
-                slot.GetComponent<InventorySlot>().Setup(eng); // Calls the Engram version
+                var entry = engramStacks[eng.engramName];
+                engramStacks[eng.engramName] = (entry.data, entry.count + 1);
+            }
+            else
+            {
+                engramStacks[eng.engramName] = (eng, 1);
             }
         }
 
-        // Clean up layout
+        // Spawn one slot per unique engram type with stack count
+        foreach (var kvp in engramStacks)
+        {
+            GameObject slot = Instantiate(slotPrefab, engramGrid);
+            slot.GetComponent<InventorySlot>().SetupEngram(kvp.Value.data, kvp.Value.count);
+        }
+
+        // Force layout rebuild
         Canvas.ForceUpdateCanvases();
         weaponGrid.GetComponent<UnityEngine.UI.LayoutGroup>().enabled = false;
         weaponGrid.GetComponent<UnityEngine.UI.LayoutGroup>().enabled = true;
