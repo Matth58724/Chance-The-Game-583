@@ -258,6 +258,7 @@ MonoBehaviour:
   inventory:
   - {fileID: 11400000, guid: 771b6e8aa40a1d14b850b6291367c5b9, type: 2}
   weaponHolder: {fileID: 1283076114204250214}
+  startingWeapon: {fileID: 11400000, guid: 771b6e8aa40a1d14b850b6291367c5b9, type: 2}
   engramInventory: []
   maxEngramSlots: 5
   currentWeapon: {fileID: 0}

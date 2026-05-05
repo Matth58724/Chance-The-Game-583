@@ -330,9 +330,9 @@ MonoBehaviour:
   maxHealth: 100
   currentHealth: 0
   hitMat: {fileID: 2100000, guid: 139670a6b39836a4daafdcfe91411e88, type: 2}
-  engramPickupPrefab: {fileID: 0}
+  engramPickupPrefab: {fileID: 3942438488855455635, guid: 3f83ba0f575f1244494577f017873d2e, type: 3}
   engramToDrop: {fileID: 11400000, guid: 097663be4c75fbc438f0f134a002f6a1, type: 2}
-  dropChance: 8
+  dropChance: 100
 --- !u!114 &6739060394429537274
 MonoBehaviour:
   m_ObjectHideFlags: 0

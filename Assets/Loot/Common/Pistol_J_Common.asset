@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2384f4f5c5352b4483af2faee199c16, type: 3}
   m_Name: Pistol_J_Common
   m_EditorClassIdentifier: Assembly-CSharp::WeaponData
-  weaponName: Poor Grade Unit-27
+  weaponName: Rusty Unit-27
+  weaponIcon: {fileID: 21300000, guid: 68983fe826b1eef459e958259019f892, type: 3}
   modelPrefab: {fileID: 88317814946030486, guid: ea1ad08618ee1794b816f11a5aebd849, type: 3}
   rarity: 0
   rarityColor: {r: 1, g: 1, b: 1, a: 0}
