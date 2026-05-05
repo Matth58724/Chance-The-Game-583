@@ -55,8 +55,12 @@ public class WeaponManager : MonoBehaviour
         }
     }
 
-    void Update()
+void Update()
     {
+        // Block shooting when inventory or terminal is open
+        if (InventoryUI.isInventoryOpen) return;
+        if (DecodingTerminalUI.isTerminalOpen) return;
+
         // Fire if holding shoot button, weapon exists, fire rate allows it
         // and weapon is not reloading
         if (isFiring && currentWeapon != null &&

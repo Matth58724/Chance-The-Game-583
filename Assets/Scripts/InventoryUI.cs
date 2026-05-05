@@ -76,15 +76,9 @@ void RefreshUI()
             slot.GetComponent<InventorySlot>().SetupEngram(kvp.Value.data, kvp.Value.count);
         }
 
-        // Force layout rebuild
+        // Force full canvas rebuild so grid layout applies correctly
         Canvas.ForceUpdateCanvases();
-        weaponGrid.GetComponent<UnityEngine.UI.LayoutGroup>().enabled = false;
-        weaponGrid.GetComponent<UnityEngine.UI.LayoutGroup>().enabled = true;
-
-        if (engramGrid.GetComponent<UnityEngine.UI.LayoutGroup>() != null)
-        {
-            engramGrid.GetComponent<UnityEngine.UI.LayoutGroup>().enabled = false;
-            engramGrid.GetComponent<UnityEngine.UI.LayoutGroup>().enabled = true;
-        }
+        UnityEngine.UI.LayoutRebuilder.ForceRebuildLayoutImmediate(weaponGrid.GetComponent<RectTransform>());
+        UnityEngine.UI.LayoutRebuilder.ForceRebuildLayoutImmediate(engramGrid.GetComponent<RectTransform>());
     }
 }

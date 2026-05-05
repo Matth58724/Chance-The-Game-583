@@ -32,8 +32,12 @@ public class PlayerLook : MonoBehaviour
         lookInput = value.Get<Vector2>();
     }
 
-    void Look()
+void Look()
     {
+        // Block camera movement when inventory or terminal is open
+        if (InventoryUI.isInventoryOpen) return;
+        if (DecodingTerminalUI.isTerminalOpen) return;
+
         float mouseX = lookInput.x * mouseSensitivity * Time.deltaTime;
         float mouseY = lookInput.y * mouseSensitivity * Time.deltaTime;
 

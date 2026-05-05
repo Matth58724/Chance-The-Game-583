@@ -50,16 +50,15 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    void ApplyMovement()
+void ApplyMovement()
     {
         // Get the direction from WASD
         Vector3 moveDir = new Vector3(moveInput.x, 0, moveInput.y);
 
-        // Convert that direction from Local Space to World Space (Fixes wonkyness after turning the camera)
-        // This makes forward become the direction the capsule is facing instead of on a world scale
+        // Convert local space to world space
         Vector3 relativeMove = transform.TransformDirection(moveDir) * moveSpeed;
 
-        // Apply it to the Rigidbody while also keeping the falling speed (Y)
+        // Apply velocity while keeping Y for gravity
         rb.linearVelocity = new Vector3(relativeMove.x, rb.linearVelocity.y, relativeMove.z);
     }
 }
