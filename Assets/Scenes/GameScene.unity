@@ -3685,6 +3685,14 @@ PrefabInstance:
       propertyPath: 'patrolPoints.Array.data[2]'
       value: 
       objectReference: {fileID: 1299367078}
+    - target: {fileID: 3360562300502913308, guid: 754ad70b46a243a49a2c7e93778ee016, type: 3}
+      propertyPath: possibleDrops.Array.data[3].dropChance
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 3360562300502913308, guid: 754ad70b46a243a49a2c7e93778ee016, type: 3}
+      propertyPath: possibleDrops.Array.data[4].dropChance
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 7818799868551197151, guid: 754ad70b46a243a49a2c7e93778ee016, type: 3}
       propertyPath: m_LocalPosition.x
       value: 11.18

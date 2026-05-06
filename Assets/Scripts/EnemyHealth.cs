@@ -17,9 +17,17 @@ public class EnemyHealth : MonoBehaviour
     private Enemy enemyAI;              // Reference to AI script to disable on death
 
     // Engram Drops
-    public GameObject engramPickupPrefab; // A physical loot crate/orb
-    public EngramData engramToDrop;
-    [Range(0, 100)] public float dropChance = 25f;
+
+    [System.Serializable]
+    public class EngramDrop
+    {
+        public EngramData engramData;
+        public GameObject engramPickupPrefab; // Engram prefab
+        [Range(0, 100)] public float dropChance = 25f;
+    }
+
+    [Header("Engram Drops")]
+    public EngramDrop[] possibleDrops = new EngramDrop[5];
 
 
     void Start()
@@ -74,17 +82,22 @@ public class EnemyHealth : MonoBehaviour
         // Destroy after 3 seconds to clean up scene
         Destroy(gameObject, 3f);
 
-        // Engram Drop Chance
-        if (Random.Range(0f, 100f) <= dropChance && engramToDrop != null)
+        // Roll each engram drop independently
+        foreach (EngramDrop drop in possibleDrops)
         {
-            Vector3 spawnPos = transform.position + Vector3.up * 1.5f; // Spawn slightly above the enemy's feet
-            GameObject drop = Instantiate(engramPickupPrefab, spawnPos, Quaternion.identity);
-
-            // PASS THE DATA TO THE PICKUP SCRIPT
-            EngramPickup pickupScript = drop.GetComponent<EngramPickup>();
-            if (pickupScript != null)
+            if (drop.engramData == null) continue;
+            if (drop.engramPickupPrefab == null) continue;
+            if (Random.Range(0f, 100f) <= drop.dropChance)
             {
-                pickupScript.engramData = engramToDrop;
+                Vector3 spawnPos = transform.position + Vector3.up * 1.5f; // Spawn slightly above the enemy's feet
+                spawnPos += new Vector3(Random.Range(-0.5f, 0.5f), 0f, Random.Range(-0.5f, 0.5f));
+
+                GameObject dropObj = Instantiate(drop.engramPickupPrefab, spawnPos, Quaternion.identity);
+
+                // PASS THE DATA TO THE PICKUP SCRIPT
+                EngramPickup pickupScript = dropObj.GetComponent<EngramPickup>();
+                if (pickupScript != null)
+                    pickupScript.engramData = drop.engramData;
             }
         }
     }

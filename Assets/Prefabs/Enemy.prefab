@@ -330,9 +330,22 @@ MonoBehaviour:
   maxHealth: 100
   currentHealth: 0
   hitMat: {fileID: 2100000, guid: 139670a6b39836a4daafdcfe91411e88, type: 2}
-  engramPickupPrefab: {fileID: 3942438488855455635, guid: 3f83ba0f575f1244494577f017873d2e, type: 3}
-  engramToDrop: {fileID: 11400000, guid: 097663be4c75fbc438f0f134a002f6a1, type: 2}
-  dropChance: 100
+  possibleDrops:
+  - engramData: {fileID: 11400000, guid: 097663be4c75fbc438f0f134a002f6a1, type: 2}
+    engramPickupPrefab: {fileID: 3942438488855455635, guid: 3f83ba0f575f1244494577f017873d2e, type: 3}
+    dropChance: 35
+  - engramData: {fileID: 11400000, guid: 6e6332d223af421409c0f1148bee8c9a, type: 2}
+    engramPickupPrefab: {fileID: 1158535455088671830, guid: cca4a659a20b0e549842438b1b5fcad5, type: 3}
+    dropChance: 20
+  - engramData: {fileID: 11400000, guid: ec834148723c4a547b9aeee12f84d2aa, type: 2}
+    engramPickupPrefab: {fileID: 5383660618467006533, guid: d9ee8e00ef98e4342a2b71f4d9d60a4b, type: 3}
+    dropChance: 10
+  - engramData: {fileID: 11400000, guid: a994cdca64587f04e8a56ef9854353d5, type: 2}
+    engramPickupPrefab: {fileID: 5540207266824581450, guid: c61d571b6ed7e9e47b0329b84bd67afb, type: 3}
+    dropChance: 3
+  - engramData: {fileID: 11400000, guid: c89cae613fa995a42976e2dcbdf1d091, type: 2}
+    engramPickupPrefab: {fileID: 420575817705318147, guid: e055ad69456544546813ef5926310b01, type: 3}
+    dropChance: 1
 --- !u!114 &6739060394429537274
 MonoBehaviour:
   m_ObjectHideFlags: 0

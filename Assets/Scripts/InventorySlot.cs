@@ -13,6 +13,7 @@ public class InventorySlot : MonoBehaviour
     public TextMeshProUGUI nameText;
     public Image iconImage;
     public TextMeshProUGUI stackText; // Shows count e.g. "x3"
+    //public Image borderImage; // Border outline for slots
 
     // ── SETUP FOR WEAPONS ────────────────────────────────────────
     public void Setup(WeaponData data)
@@ -25,6 +26,10 @@ public class InventorySlot : MonoBehaviour
         nameText.text = data.weaponName;
         iconImage.sprite = data.weaponIcon;
         iconImage.color = Color.white;
+
+        // Set border color from WeaponDatas rarityColor
+        //if (borderImage != null)
+        //    borderImage.color = data.rarityColor;
 
         // Weapons don't stack so hide stack text
         if (stackText != null)
@@ -53,6 +58,11 @@ public class InventorySlot : MonoBehaviour
             iconImage.sprite = null;
             iconImage.color = data.engramColor;
         }
+
+        // Engrams border color
+        //if (borderImage != null)
+        //    borderImage.color = data.engramColor;
+
 
         // Show stack count if more than one
         if (stackText != null)
