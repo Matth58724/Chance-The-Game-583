@@ -5,12 +5,10 @@ using System.Collections.Generic;
 public class WeaponManager : MonoBehaviour
 {
     // ── FULL INVENTORY ───────────────────────────────────────────
-    // All weapons the player has collected
     public List<WeaponData> inventory = new List<WeaponData>();
     public WeaponData startingWeapon;
 
-    // ── EQUIP SLOTS ─────────────────────────────────────────────
-    // 3 active weapon slots the player can swap between
+    // ── EQUIP SLOTS ──────────────────────────────────────────────
     public WeaponData[] equipSlots = new WeaponData[3];
     public int currentWeaponIndex = 0;
     public Transform weaponHolder;
@@ -20,17 +18,20 @@ public class WeaponManager : MonoBehaviour
     public List<EngramData> engramInventory = new List<EngramData>();
     public int maxEngramSlots = 5;
 
-    // ── CURRENT STATE ───────────────────────────────────────────
+    // ── CURRENT STATE ────────────────────────────────────────────
     public Weapon currentWeapon;
     private bool isFiring = false;
     private float nextFireTime = 0f;
     private float scrollCooldown = 0f;
 
-    // ── UNITY METHODS ───────────────────────────────────────────
+    // ── AMMO PERSISTENCE ─────────────────────────────────────────
+    // Keyed by WeaponData instance ID so ammo persists when switching
+    private Dictionary<int, int> savedAmmo = new Dictionary<int, int>();
+
+    // ── UNITY METHODS ────────────────────────────────────────────
 
     void Awake()
     {
-        // Add starting weapon to inventory and equip slot 0
         if (startingWeapon != null && !inventory.Contains(startingWeapon))
         {
             inventory.Add(startingWeapon);
@@ -40,34 +41,33 @@ public class WeaponManager : MonoBehaviour
 
     void Start()
     {
-        // Equip whatever is in slot 0
         if (equipSlots[0] != null)
             EquipWeapon(0);
     }
 
-    void Update()
+void Update()
     {
-        // Block input when UI is open
         if (InventoryUI.isInventoryOpen) return;
         if (DecodingTerminalUI.isTerminalOpen) return;
 
-        // Keys 1/2/3 to switch equip slots
+        // Continuously save current weapon ammo so it persists on switch
+        if (currentWeapon != null && equipSlots[currentWeaponIndex] != null)
+            savedAmmo[equipSlots[currentWeaponIndex].GetInstanceID()] = currentWeapon.currentAmmo;
+
         if (Input.GetKeyDown(KeyCode.Alpha1)) EquipWeapon(0);
         if (Input.GetKeyDown(KeyCode.Alpha2)) EquipWeapon(1);
         if (Input.GetKeyDown(KeyCode.Alpha3)) EquipWeapon(2);
 
-        // Scroll wheel to cycle through equip slots
         scrollCooldown -= Time.deltaTime;
         float scroll = Input.GetAxis("Mouse ScrollWheel");
         if (scrollCooldown <= 0f && Mathf.Abs(scroll) > 0.01f)
         {
             scrollCooldown = 0.2f;
-            int dir = scroll > 0 ? -1 : 1;
+            int dir  = scroll > 0 ? -1 : 1;
             int next = (currentWeaponIndex + dir + 3) % 3;
             EquipWeapon(next);
         }
 
-        // Fire
         if (isFiring && currentWeapon != null &&
             Time.time >= nextFireTime && !currentWeapon.isReloading)
         {
@@ -79,7 +79,7 @@ public class WeaponManager : MonoBehaviour
         }
     }
 
-    // ── INPUT SYSTEM MESSAGES ─────────────────────────────────────
+    // ── INPUT SYSTEM MESSAGES ────────────────────────────────────
 
     void OnShoot() => isFiring = true;
     void OnShootRelease() => isFiring = false;
@@ -92,21 +92,25 @@ public class WeaponManager : MonoBehaviour
 
     // ── PUBLIC METHODS ───────────────────────────────────────────
 
-    // Equip the weapon in the given slot index (0-2)
-    public void EquipWeapon(int slotIndex)
+public void EquipWeapon(int slotIndex)
     {
         if (slotIndex < 0 || slotIndex >= equipSlots.Length) return;
         if (equipSlots[slotIndex] == null) return;
 
+        // Already on this slot - do nothing
+        if (slotIndex == currentWeaponIndex && currentWeapon != null) return;
+
+        // Save current ammo before switching
+        if (currentWeapon != null && equipSlots[currentWeaponIndex] != null)
+            savedAmmo[equipSlots[currentWeaponIndex].GetInstanceID()] = currentWeapon.currentAmmo;
+
         currentWeaponIndex = slotIndex;
         WeaponData data = equipSlots[slotIndex];
 
-        // Destroy current weapon model
         if (weaponHolder.childCount > 0)
             foreach (Transform child in weaponHolder)
                 Destroy(child.gameObject);
 
-        // Spawn new weapon model
         GameObject newWepObj = Instantiate(data.modelPrefab, weaponHolder);
         newWepObj.transform.localPosition = Vector3.zero;
         newWepObj.transform.localRotation = Quaternion.identity;
@@ -120,37 +124,42 @@ public class WeaponManager : MonoBehaviour
             currentWeapon.range       = data.range;
             currentWeapon.maxAmmo     = data.magSize;
             currentWeapon.reloadTime  = data.reloadTime;
-            currentWeapon.currentAmmo = data.magSize;
+
+            // Restore saved ammo or start full
+            int id = data.GetInstanceID();
+            currentWeapon.currentAmmo = savedAmmo.ContainsKey(id) ? savedAmmo[id] : data.magSize;
         }
 
         Debug.Log("Equipped slot " + (slotIndex + 1) + ": " + data.weaponName);
     }
 
-    // Assign a weapon from inventory to an equip slot
     public void AssignToSlot(WeaponData data, int slotIndex)
     {
         if (slotIndex < 0 || slotIndex >= equipSlots.Length) return;
+
+        // Remove from any other slot
+        for (int i = 0; i < equipSlots.Length; i++)
+            if (i != slotIndex && equipSlots[i] == data)
+                equipSlots[i] = null;
+
         equipSlots[slotIndex] = data;
 
-        // If this is the currently active slot re-equip it
         if (slotIndex == currentWeaponIndex)
             EquipWeapon(slotIndex);
 
         Debug.Log("Assigned " + data.weaponName + " to slot " + (slotIndex + 1));
     }
 
-    // Add weapon to full inventory
-    public void AddToInventory(WeaponData newLoot)
+    public void AddToInventory(WeaponData data)
     {
-        inventory.Add(newLoot);
-        Debug.Log($"Picked up: {newLoot.weaponName} ({newLoot.rarity})");
+        inventory.Add(data);
+        Debug.Log($"Picked up: {data.weaponName} ({data.rarity})");
 
-        // Auto assign to first empty equip slot
         for (int i = 0; i < equipSlots.Length; i++)
         {
             if (equipSlots[i] == null)
             {
-                AssignToSlot(newLoot, i);
+                AssignToSlot(data, i);
                 break;
             }
         }
