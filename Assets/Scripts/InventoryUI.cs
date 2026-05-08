@@ -41,7 +41,7 @@ void RefreshUI()
         foreach (Transform child in engramGrid) Destroy(child.gameObject);
 
         // Spawn weapons into weapon grid
-        foreach (WeaponData wep in playerWeaponManager.inventory)
+        foreach (WeaponManager.WeaponEntry wep in playerWeaponManager.inventory)
         {
             if (wep != null)
             {

@@ -11,7 +11,7 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     public TextMeshProUGUI stackText;
 
     // ── PRIVATE STATE ────────────────────────────────────────────
-    private WeaponData weaponData;
+    private WeaponManager.WeaponEntry weaponEntry;
     private WeaponManager weaponManager;
     private bool isHovered = false;
     private Image bgImage;
@@ -30,14 +30,11 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     void Update()
     {
-        if (!isHovered || weaponData == null) return;
-
+        if (!isHovered || weaponEntry == null) return;
         if (Input.GetKeyDown(KeyCode.Alpha1)) AssignToSlot(0);
         if (Input.GetKeyDown(KeyCode.Alpha2)) AssignToSlot(1);
         if (Input.GetKeyDown(KeyCode.Alpha3)) AssignToSlot(2);
     }
-
-    // ── HOVER EVENTS ─────────────────────────────────────────────
 
     public void OnPointerEnter(PointerEventData eventData)
     {
@@ -51,63 +48,35 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         if (bgImage != null) bgImage.color = normalColor;
     }
 
-    // ── SETUP FOR WEAPONS ────────────────────────────────────────
+    // ── SETUP ────────────────────────────────────────────────────
 
-    public void Setup(WeaponData data)
+    public void Setup(WeaponManager.WeaponEntry entry)
     {
-        if (data == null)
+        if (entry == null || entry.data == null)
         {
-            Debug.LogError("Slot received NULL WeaponData!");
+            Debug.LogError("Slot received NULL WeaponEntry!");
             return;
         }
-
-        weaponData = data;
-
-        nameText.text    = data.weaponName;
-        iconImage.sprite = data.weaponIcon;
+        weaponEntry = entry;
+        nameText.text    = entry.data.weaponName;
+        iconImage.sprite = entry.data.weaponIcon;
         iconImage.color  = Color.white;
-
-        if (stackText != null)
-            stackText.gameObject.SetActive(false);
+        if (stackText != null) stackText.gameObject.SetActive(false);
     }
-
-    // ── SETUP FOR ENGRAMS ────────────────────────────────────────
 
     public void SetupEngram(EngramData data, int count = 1)
     {
-        if (data == null)
-        {
-            Debug.LogError("Slot received NULL EngramData!");
-            return;
-        }
-
-        weaponData = null;
+        if (data == null) { Debug.LogError("Slot received NULL EngramData!"); return; }
+        weaponEntry = null;
         nameText.text = data.engramName;
-
-        if (data.engramIcon != null)
-        {
-            iconImage.sprite = data.engramIcon;
-            iconImage.color  = Color.white;
-        }
-        else
-        {
-            iconImage.sprite = null;
-            iconImage.color  = data.engramColor;
-        }
-
-        if (stackText != null)
-        {
-            stackText.gameObject.SetActive(count > 1);
-            stackText.text = "x" + count;
-        }
+        if (data.engramIcon != null) { iconImage.sprite = data.engramIcon; iconImage.color = Color.white; }
+        else { iconImage.sprite = null; iconImage.color = data.engramColor; }
+        if (stackText != null) { stackText.gameObject.SetActive(count > 1); stackText.text = "x" + count; }
     }
-
-    // ── PRIVATE METHODS ──────────────────────────────────────────
 
     void AssignToSlot(int slotIndex)
     {
-        if (weaponManager == null || weaponData == null) return;
-        weaponManager.AssignToSlot(weaponData, slotIndex);
-        Debug.Log(weaponData.weaponName + " assigned to slot " + (slotIndex + 1));
+        if (weaponManager == null || weaponEntry == null) return;
+        weaponManager.AssignToSlot(weaponEntry, slotIndex);
     }
 }

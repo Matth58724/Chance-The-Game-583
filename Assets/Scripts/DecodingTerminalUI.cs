@@ -105,7 +105,7 @@ public void CloseTerminal()
         terminal.DecodeEngram(playerWeaponManager, engramIndex);
 
         // Show result message
-        ShowResult("Decoded into: " + playerWeaponManager.inventory[playerWeaponManager.inventory.Count - 1].weaponName + "!");
+        ShowResult("Decoded into: " + playerWeaponManager.inventory[playerWeaponManager.inventory.Count - 1].data.weaponName + "!");
 
         // Refresh the list
         RefreshEngramList();

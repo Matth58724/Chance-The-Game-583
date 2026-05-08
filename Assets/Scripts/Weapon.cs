@@ -35,10 +35,10 @@ public class Weapon : MonoBehaviour
 
 void Start()
     {
-        currentAmmo = maxAmmo;
+        // NOTE: currentAmmo is set by WeaponManager.EquipWeapon, not here
+        // This prevents ammo resetting every time a weapon is equipped
         weaponOriginalPosition = transform.localPosition;
 
-        // Find PlayerLook for camera recoil
         playerLook = FindFirstObjectByType<PlayerLook>();
         if (playerLook == null)
             Debug.LogError("PlayerLook not found!");

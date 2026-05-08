@@ -4,12 +4,29 @@ using System.Collections.Generic;
 
 public class WeaponManager : MonoBehaviour
 {
+    // ── INVENTORY ENTRY ──────────────────────────────────────────
+    // Wraps WeaponData with a unique runtime ID so duplicates work
+    public class WeaponEntry
+    {
+        public WeaponData data;
+        public int uid;        // Unique per pickup, not per asset
+        public int savedAmmo;
+
+        public WeaponEntry(WeaponData data, int uid)
+        {
+            this.data     = data;
+            this.uid      = uid;
+            this.savedAmmo = data.magSize;
+        }
+    }
+
     // ── FULL INVENTORY ───────────────────────────────────────────
-    public List<WeaponData> inventory = new List<WeaponData>();
+    public List<WeaponEntry> inventory = new List<WeaponEntry>();
     public WeaponData startingWeapon;
+    private int nextUID = 0;
 
     // ── EQUIP SLOTS ──────────────────────────────────────────────
-    public WeaponData[] equipSlots = new WeaponData[3];
+    public WeaponEntry[] equipSlots = new WeaponEntry[3];
     public int currentWeaponIndex = 0;
     public Transform weaponHolder;
 
@@ -24,18 +41,15 @@ public class WeaponManager : MonoBehaviour
     private float nextFireTime = 0f;
     private float scrollCooldown = 0f;
 
-    // ── AMMO PERSISTENCE ─────────────────────────────────────────
-    // Keyed by WeaponData instance ID so ammo persists when switching
-    private Dictionary<int, int> savedAmmo = new Dictionary<int, int>();
-
     // ── UNITY METHODS ────────────────────────────────────────────
 
     void Awake()
     {
-        if (startingWeapon != null && !inventory.Contains(startingWeapon))
+        if (startingWeapon != null)
         {
-            inventory.Add(startingWeapon);
-            equipSlots[0] = startingWeapon;
+            var entry = new WeaponEntry(startingWeapon, nextUID++);
+            inventory.Add(entry);
+            equipSlots[0] = entry;
         }
     }
 
@@ -45,14 +59,10 @@ public class WeaponManager : MonoBehaviour
             EquipWeapon(0);
     }
 
-void Update()
+    void Update()
     {
         if (InventoryUI.isInventoryOpen) return;
         if (DecodingTerminalUI.isTerminalOpen) return;
-
-        // Continuously save current weapon ammo so it persists on switch
-        if (currentWeapon != null && equipSlots[currentWeaponIndex] != null)
-            savedAmmo[equipSlots[currentWeaponIndex].GetInstanceID()] = currentWeapon.currentAmmo;
 
         if (Input.GetKeyDown(KeyCode.Alpha1)) EquipWeapon(0);
         if (Input.GetKeyDown(KeyCode.Alpha2)) EquipWeapon(1);
@@ -79,33 +89,34 @@ void Update()
         }
     }
 
-    // ── INPUT SYSTEM MESSAGES ────────────────────────────────────
+
+    void LateUpdate()
+    {
+        // Save ammo every frame in LateUpdate so it always runs after shooting
+        if (currentWeapon != null && equipSlots[currentWeaponIndex] != null)
+            equipSlots[currentWeaponIndex].savedAmmo = currentWeapon.currentAmmo;
+    }
+    // ── INPUT MESSAGES ───────────────────────────────────────────
 
     void OnShoot() => isFiring = true;
     void OnShootRelease() => isFiring = false;
-
-    void OnReload()
-    {
-        if (currentWeapon != null)
-            currentWeapon.StartReload();
-    }
+    void OnReload() { if (currentWeapon != null) currentWeapon.StartReload(); }
 
     // ── PUBLIC METHODS ───────────────────────────────────────────
 
-public void EquipWeapon(int slotIndex)
+    public void EquipWeapon(int slotIndex)
     {
         if (slotIndex < 0 || slotIndex >= equipSlots.Length) return;
         if (equipSlots[slotIndex] == null) return;
-
-        // Already on this slot - do nothing
         if (slotIndex == currentWeaponIndex && currentWeapon != null) return;
 
-        // Save current ammo before switching
+        // Save current ammo
         if (currentWeapon != null && equipSlots[currentWeaponIndex] != null)
-            savedAmmo[equipSlots[currentWeaponIndex].GetInstanceID()] = currentWeapon.currentAmmo;
+            equipSlots[currentWeaponIndex].savedAmmo = currentWeapon.currentAmmo;
 
         currentWeaponIndex = slotIndex;
-        WeaponData data = equipSlots[slotIndex];
+        WeaponEntry entry = equipSlots[slotIndex];
+        WeaponData data   = entry.data;
 
         if (weaponHolder.childCount > 0)
             foreach (Transform child in weaponHolder)
@@ -124,42 +135,42 @@ public void EquipWeapon(int slotIndex)
             currentWeapon.range       = data.range;
             currentWeapon.maxAmmo     = data.magSize;
             currentWeapon.reloadTime  = data.reloadTime;
-
-            // Restore saved ammo or start full
-            int id = data.GetInstanceID();
-            currentWeapon.currentAmmo = savedAmmo.ContainsKey(id) ? savedAmmo[id] : data.magSize;
+            currentWeapon.currentAmmo = entry.savedAmmo;
         }
 
-        Debug.Log("Equipped slot " + (slotIndex + 1) + ": " + data.weaponName);
+        Debug.Log("Equipped slot " + (slotIndex + 1) + ": " + data.weaponName + " [uid=" + entry.uid + "]");
     }
 
-    public void AssignToSlot(WeaponData data, int slotIndex)
+    // Assign a specific WeaponEntry to a slot
+    public void AssignToSlot(WeaponEntry entry, int slotIndex)
     {
         if (slotIndex < 0 || slotIndex >= equipSlots.Length) return;
+        if (entry == null) return;
 
-        // Remove from any other slot
+        // Remove this exact entry (by uid) from any other slot
         for (int i = 0; i < equipSlots.Length; i++)
-            if (i != slotIndex && equipSlots[i] == data)
+            if (i != slotIndex && equipSlots[i] != null && equipSlots[i].uid == entry.uid)
                 equipSlots[i] = null;
 
-        equipSlots[slotIndex] = data;
+        equipSlots[slotIndex] = entry;
 
         if (slotIndex == currentWeaponIndex)
             EquipWeapon(slotIndex);
 
-        Debug.Log("Assigned " + data.weaponName + " to slot " + (slotIndex + 1));
+        Debug.Log("Assigned " + entry.data.weaponName + " [uid=" + entry.uid + "] to slot " + (slotIndex + 1));
     }
 
     public void AddToInventory(WeaponData data)
     {
-        inventory.Add(data);
+        var entry = new WeaponEntry(data, nextUID++);
+        inventory.Add(entry);
         Debug.Log($"Picked up: {data.weaponName} ({data.rarity})");
 
         for (int i = 0; i < equipSlots.Length; i++)
         {
             if (equipSlots[i] == null)
             {
-                AssignToSlot(data, i);
+                AssignToSlot(entry, i);
                 break;
             }
         }

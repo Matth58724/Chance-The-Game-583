@@ -134,7 +134,8 @@ public class HotbarUI : MonoBehaviour
 
             if (hasWeapon)
             {
-                var data = weaponManager.inventory[i];
+                var entry = weaponManager.inventory[i];
+            var data = entry.data;
 
                 // Show icon if available
                 if (data.weaponIcon != null)

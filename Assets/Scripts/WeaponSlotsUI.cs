@@ -172,7 +172,7 @@ void BuildUI()
 
         for (int i = 0; i < SLOT_COUNT; i++)
         {
-            bool hasWeapon  = weaponManager.equipSlots[i] != null;
+            bool hasWeapon = weaponManager.equipSlots[i] != null;
             bool isActive   = i == weaponManager.currentWeaponIndex;
 
             // Background and border colors
@@ -186,7 +186,7 @@ void BuildUI()
             slotNames[i].color   = textColor;
 
             // Weapon name
-            slotNames[i].text = hasWeapon ? weaponManager.equipSlots[i].weaponName : "-- Empty --";
+            slotNames[i].text = hasWeapon ? weaponManager.equipSlots[i].data.weaponName : "-- Empty --";
         }
 
         // Ammo display for active weapon
