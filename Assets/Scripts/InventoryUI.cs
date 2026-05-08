@@ -13,12 +13,11 @@ public class InventoryUI : MonoBehaviour
 
     private bool isOpen = false;
 
-    void Update()
+void Update()
     {
-        if (Input.GetKeyDown(KeyCode.I))
-        {
+        // Open/close inventory with I or Tab
+        if (Input.GetKeyDown(KeyCode.I) || Input.GetKeyDown(KeyCode.Tab))
             ToggleInventory();
-        }
     }
     public static bool isInventoryOpen = false;
 
