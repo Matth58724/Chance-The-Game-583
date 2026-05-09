@@ -29,7 +29,7 @@ public class Enemy : MonoBehaviour
 
     // STATE MACHINE
     public enum State { Idle, Patrolling, Chasing, Attacking }
-    public State state = State.Patrolling;
+    public State state = State.Patrolling; // Start patrolling immediately
 
 
     void Start()
@@ -77,8 +77,9 @@ public class Enemy : MonoBehaviour
                 break;
         }
 
-        // Prevent rigidbody from fighting NavMesh Agent movement
-        rb.linearVelocity = Vector3.zero;
+        // Only zero velocity when agent isn't navigating to avoid fighting NavMeshAgent
+        if (!agent.hasPath || agent.isStopped)
+            rb.linearVelocity = Vector3.zero;
 
         // Face player and track last known position
         LookAtPlayer();
@@ -86,77 +87,66 @@ public class Enemy : MonoBehaviour
     }
 
 
-    void Idle()
+void Idle()
     {
-        // Stand still
         agent.ResetPath();
 
-        // Count down idle timer
         idleTimeCounter -= Time.deltaTime;
 
-        // Switch to patrolling when timer expires
-        if (idleTimeCounter < 0)
+        if (idleTimeCounter <= 0)
         {
             state = State.Patrolling;
             idleTimeCounter = idleTime;
-        }
-    }
-
-    void Patrolling()
-    {
-        if (patrolPoints.Length == 0) return;
-
-        // Initialize current target if not set yet
-        if (currentTarget == Vector3.zero)
-            currentTarget = patrolPoints[0].position;
-
-        // Check if close enough to current patrol target
-        if (Vector3.Distance(currentTarget, transform.position) < positionThreshold)
-        {
-            // 10% chance to idle at this point
-            float chance = Random.Range(0f, 100f);
-            if (chance < 10f)
-            {
-                state = State.Idle;
-                return;
-            }
-
-            // Advance to next patrol point looping back to start
-            currentPointIndex++;
-            currentTarget = patrolPoints[currentPointIndex % patrolPoints.Length].position;
-        }
-        else
-        {
-            // Keep moving toward current patrol target
+            // Resume patrolling from next point
             agent.SetDestination(currentTarget);
         }
     }
 
-    void Chasing()
+void Patrolling()
     {
-        // Reset idle timer in case we transition to idle after
+        if (patrolPoints == null || patrolPoints.Length == 0) return;
+
+        // Only call SetDestination when not already calculating — calling every frame
+        // resets the path calculation and causes pathPending to stay True forever
+        if (!agent.pathPending && !agent.hasPath)
+            agent.SetDestination(currentTarget);
+
+        // Check if close enough to advance (XZ only to ignore Y differences)
+        float dist = Vector3.Distance(
+            new Vector3(transform.position.x, 0f, transform.position.z),
+            new Vector3(currentTarget.x, 0f, currentTarget.z));
+
+        if (dist < positionThreshold)
+        {
+            currentPointIndex = (currentPointIndex + 1) % patrolPoints.Length;
+            currentTarget = patrolPoints[currentPointIndex].position;
+            agent.SetDestination(currentTarget);
+        }
+    }
+
+void Chasing()
+    {
         idleTimeCounter = idleTime;
 
-        // Move toward last known player position
         agent.SetDestination(lastKnownPlayerPosition);
 
-        // Attack if close enough and has line of sight
-        if (Vector3.Distance(transform.position, playerTransform.position)
-                 <= attackDistance && canSeePlayer)
+        if (Vector3.Distance(transform.position, playerTransform.position) <= attackDistance && canSeePlayer)
         {
             state = State.Attacking;
         }
-        // Give up chase if player is too far
-        else if (Vector3.Distance(transform.position, playerTransform.position)
-                 > maxVisionDistance)
+        else if (Vector3.Distance(transform.position, playerTransform.position) > maxVisionDistance)
         {
+            // Lost player - go back to patrolling not idle
             state = State.Patrolling;
+            if (patrolPoints != null && patrolPoints.Length > 0)
+                agent.SetDestination(currentTarget);
         }
-        // Give up if reached last known position but lost sight
-        else if (Vector3.Distance(transform.position, lastKnownPlayerPosition)
-                 < positionThreshold && !canSeePlayer)
+        else if (Vector3.Distance(transform.position, lastKnownPlayerPosition) < positionThreshold && !canSeePlayer)
         {
+            // Reached last known position but lost sight - resume patrol
             state = State.Patrolling;
+            if (patrolPoints != null && patrolPoints.Length > 0)
+                agent.SetDestination(currentTarget);
         }
     }
 
