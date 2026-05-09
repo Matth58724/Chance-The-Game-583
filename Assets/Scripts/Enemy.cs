@@ -3,184 +3,171 @@ using UnityEngine.AI;
 using System.Collections;
 using System.Collections.Generic;
 
+using UnityEngine;
+using UnityEngine.AI;
+using System.Collections;
+using System.Collections.Generic;
+
 public class Enemy : MonoBehaviour
 {
-    // AI SETTINGS
-    public int currentPointIndex = 0;        // Index of current patrol point
-    public Vector3 currentTarget;            // World position enemy is moving toward
-    public float positionThreshold = 2f;     // Distance to consider patrol point reached
-    public float idleTime = 5f;              // Seconds to idle before patrolling again
-    public float attackDistance = 5f;        // Distance at which enemy stops and attacks
-    public float maxVisionDistance = 20f;    // Max distance enemy can detect player
+    // ── AI SETTINGS ──────────────────────────────────────────────
+    public float patrolRadius    = 15f;   // How far from spawn to wander
+    public float idleTime        = 2f;    // Seconds to wait at each patrol point
+    public float attackDistance  = 5f;    // Distance to stop and attack
+    public float maxVisionDistance = 20f; // Max detection range
+    public float positionThreshold = 1.5f;
 
-    public Transform[] patrolPoints;         // Patrol points assigned in Inspector
+    // ── LEGACY - kept for compatibility but no longer used ───────
+    public Transform[] patrolPoints;
+    public int currentPointIndex = 0;
+    public Vector3 currentTarget;
 
-    // REFERENCES
+    // ── REFERENCES ───────────────────────────────────────────────
     private NavMeshAgent agent;
-    private Rigidbody rb;
     private Transform playerTransform;
 
-    // VISION STATE
+    // ── SPAWN INFO ───────────────────────────────────────────────
+    private Vector3 spawnPosition; // Center of this enemy's patrol zone
+
+    // ── VISION STATE ─────────────────────────────────────────────
     private bool canSeePlayer;
     private Vector3 lastKnownPlayerPosition;
 
-    // IDLE TIMER
-    private float idleTimeCounter;
+    // ── IDLE TIMER ───────────────────────────────────────────────
+    private float idleTimer;
+    private bool waitingAtPoint = false;
 
-    // STATE MACHINE
+    // ── STATE MACHINE ────────────────────────────────────────────
     public enum State { Idle, Patrolling, Chasing, Attacking }
-    public State state = State.Patrolling; // Start patrolling immediately
+    public State state = State.Patrolling;
 
+    // ── UNITY METHODS ────────────────────────────────────────────
 
     void Start()
     {
-        // Cache components
-        rb = GetComponent<Rigidbody>();
-        agent = GetComponent<NavMeshAgent>();
+        agent         = GetComponent<NavMeshAgent>();
+        spawnPosition = transform.position;
 
-        // Start idle timer at full
-        idleTimeCounter = idleTime;
-
-        // Find player by tag
         GameObject playerObj = GameObject.FindWithTag("Player");
         if (playerObj != null)
             playerTransform = playerObj.transform;
         else
-            Debug.LogError("Player not found! Make sure Player is tagged Player.");
+            Debug.LogError("Player not found!");
 
-        // Set first patrol target if points are assigned
-        if (patrolPoints.Length > 0)
-            currentTarget = patrolPoints[0].position;
+        // Pick first random patrol destination
+        SetNewPatrolDestination();
     }
 
     void Update()
     {
         if (playerTransform == null) return;
 
-        // Check line of sight to player every frame
         LookForPlayer();
 
-        // Run current state behavior
         switch (state)
         {
-            case State.Idle:
-                Idle();
-                break;
-            case State.Patrolling:
-                Patrolling();
-                break;
-            case State.Chasing:
-                Chasing();
-                break;
-            case State.Attacking:
-                Attacking();
-                break;
+            case State.Idle:      Idle();      break;
+            case State.Patrolling: Patrolling(); break;
+            case State.Chasing:   Chasing();   break;
+            case State.Attacking: Attacking(); break;
         }
 
-        // Only zero velocity when agent isn't navigating to avoid fighting NavMeshAgent
-        if (!agent.hasPath || agent.isStopped)
-            rb.linearVelocity = Vector3.zero;
 
-        // Face player and track last known position
         LookAtPlayer();
         SetLastKnownPlayerPosition();
     }
 
+    // ── STATES ───────────────────────────────────────────────────
 
-void Idle()
+    void Idle()
     {
         agent.ResetPath();
+        idleTimer -= Time.deltaTime;
 
-        idleTimeCounter -= Time.deltaTime;
-
-        if (idleTimeCounter <= 0)
+        if (idleTimer <= 0f)
         {
+            waitingAtPoint = false;
             state = State.Patrolling;
-            idleTimeCounter = idleTime;
-            // Resume patrolling from next point
-            agent.SetDestination(currentTarget);
+            SetNewPatrolDestination();
         }
     }
 
-void Patrolling()
+    void Patrolling()
     {
-        if (patrolPoints == null || patrolPoints.Length == 0) return;
-
-        // Only call SetDestination when not already calculating — calling every frame
-        // resets the path calculation and causes pathPending to stay True forever
+        // Only set destination when agent has no active path
         if (!agent.pathPending && !agent.hasPath)
-            agent.SetDestination(currentTarget);
+            SetNewPatrolDestination();
 
-        // Check if close enough to advance (XZ only to ignore Y differences)
-        float dist = Vector3.Distance(
-            new Vector3(transform.position.x, 0f, transform.position.z),
-            new Vector3(currentTarget.x, 0f, currentTarget.z));
-
-        if (dist < positionThreshold)
+        // Check if close enough to destination
+        if (!agent.pathPending && agent.remainingDistance <= positionThreshold)
         {
-            currentPointIndex = (currentPointIndex + 1) % patrolPoints.Length;
-            currentTarget = patrolPoints[currentPointIndex].position;
-            agent.SetDestination(currentTarget);
+            // Brief idle pause at each point
+            state     = State.Idle;
+            idleTimer = idleTime;
         }
     }
 
-void Chasing()
+    void Chasing()
     {
-        idleTimeCounter = idleTime;
-
         agent.SetDestination(lastKnownPlayerPosition);
 
-        if (Vector3.Distance(transform.position, playerTransform.position) <= attackDistance && canSeePlayer)
+        float distToPlayer = Vector3.Distance(transform.position, playerTransform.position);
+
+        if (distToPlayer <= attackDistance && canSeePlayer)
         {
             state = State.Attacking;
         }
-        else if (Vector3.Distance(transform.position, playerTransform.position) > maxVisionDistance)
+        else if (distToPlayer > maxVisionDistance)
         {
-            // Lost player - go back to patrolling not idle
             state = State.Patrolling;
-            if (patrolPoints != null && patrolPoints.Length > 0)
-                agent.SetDestination(currentTarget);
+            SetNewPatrolDestination();
         }
         else if (Vector3.Distance(transform.position, lastKnownPlayerPosition) < positionThreshold && !canSeePlayer)
         {
-            // Reached last known position but lost sight - resume patrol
             state = State.Patrolling;
-            if (patrolPoints != null && patrolPoints.Length > 0)
-                agent.SetDestination(currentTarget);
+            SetNewPatrolDestination();
         }
     }
 
     void Attacking()
     {
-        // Reset idle timer
-        idleTimeCounter = idleTime;
-
-        // Stand still while attacking
         agent.ResetPath();
 
-        // If player moved out of range or out of sight switch to chasing
-        if (Vector3.Distance(transform.position, playerTransform.position)
-            > attackDistance || !canSeePlayer)
-        {
+        float distToPlayer = Vector3.Distance(transform.position, playerTransform.position);
+        if (distToPlayer > attackDistance || !canSeePlayer)
             state = State.Chasing;
-        }
     }
 
-    // VISION
+    // ── HELPERS ──────────────────────────────────────────────────
+
+    void SetNewPatrolDestination()
+    {
+        // Try up to 10 times to find a valid NavMesh point within patrol radius
+        for (int attempt = 0; attempt < 10; attempt++)
+        {
+            Vector2 randomCircle = Random.insideUnitCircle * patrolRadius;
+            Vector3 candidate = spawnPosition + new Vector3(randomCircle.x, 0f, randomCircle.y);
+
+            NavMeshHit hit;
+            if (NavMesh.SamplePosition(candidate, out hit, 3f, NavMesh.AllAreas))
+            {
+                currentTarget = hit.position;
+                agent.SetDestination(currentTarget);
+                return;
+            }
+        }
+
+        // Fallback: go back to spawn
+        agent.SetDestination(spawnPosition);
+    }
 
     void LookForPlayer()
     {
-        // Direction from enemy to player
-        Vector3 directionToPlayer = playerTransform.position - transform.position;
+        Vector3 dirToPlayer = playerTransform.position - transform.position;
 
-        // Cast ray toward player up to max vision distance
-        if (Physics.Raycast(transform.position, directionToPlayer,
-            out RaycastHit hit, maxVisionDistance))
+        if (Physics.Raycast(transform.position, dirToPlayer, out RaycastHit hit, maxVisionDistance))
         {
-            // Can see player only if ray hits player not a wall
             canSeePlayer = hit.transform == playerTransform;
-
-            // Start chasing if spotted and not already attacking
             if (canSeePlayer && state != State.Attacking)
                 state = State.Chasing;
         }
@@ -193,18 +180,14 @@ void Chasing()
     void LookAtPlayer()
     {
         if (!canSeePlayer) return;
-
-        // Look at player keeping Y level to avoid tilting up or down
         transform.LookAt(new Vector3(
             playerTransform.position.x,
             transform.position.y,
-            playerTransform.position.z
-        ));
+            playerTransform.position.z));
     }
 
     void SetLastKnownPlayerPosition()
     {
-        // Only update when enemy has line of sight to player
         if (canSeePlayer)
             lastKnownPlayerPosition = playerTransform.position;
     }
