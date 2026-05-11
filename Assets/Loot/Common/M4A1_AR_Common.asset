@@ -18,7 +18,7 @@ MonoBehaviour:
   rarity: 0
   rarityColor: {r: 1, g: 1, b: 1, a: 0}
   fireRate: 0.1
-  damage: 8
+  damage: 4
   magSize: 30
   reloadTime: 4
   range: 100

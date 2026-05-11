@@ -16,4 +16,8 @@ MonoBehaviour:
   engramIcon: {fileID: 21300000, guid: 61767ba848f24a14fb014998ad4c9674, type: 3}
   tier: 2
   engramColor: {r: 0, g: 0, b: 1, a: 0}
-  possibleDrops: []
+  possibleDrops:
+  - {fileID: 11400000, guid: 7d8ad5f268338384daf210d51103e671, type: 2}
+  - {fileID: 11400000, guid: b3d566698e673e14082cafc8e050b28e, type: 2}
+  - {fileID: 11400000, guid: 0650ef5c9b2e2bc4882030a5387f748d, type: 2}
+  - {fileID: 11400000, guid: 8be49f46162020d43b101331473c1d61, type: 2}

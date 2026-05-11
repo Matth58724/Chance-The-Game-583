@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d2384f4f5c5352b4483af2faee199c16, type: 3}
-  m_Name: Pistol_Starter
+  m_Name: AK67_AR_UltraRare
   m_EditorClassIdentifier: Assembly-CSharp::WeaponData
-  weaponName: Starter Pistol
-  weaponIcon: {fileID: 21300000, guid: 2af3a0cc387866547b1b72fadd401378, type: 3}
-  modelPrefab: {fileID: 7785790170610667721, guid: c07318f8195e16b4eaa6d9500119965e, type: 3}
-  rarity: 0
-  rarityColor: {r: 1, g: 1, b: 1, a: 0}
-  fireRate: 0.8
-  damage: 10
-  magSize: 12
-  reloadTime: 2
-  range: 50
+  weaponName: New AK67
+  weaponIcon: {fileID: 21300000, guid: d6eccad7bbe6cd542836c7ba01fd5065, type: 3}
+  modelPrefab: {fileID: 2558141238811818592, guid: 68587b2d9c60944489560cf05cdd1aaf, type: 3}
+  rarity: 3
+  rarityColor: {r: 1, g: 0, b: 1, a: 0}
+  fireRate: 0.2
+  damage: 12
+  magSize: 30
+  reloadTime: 3
+  range: 105

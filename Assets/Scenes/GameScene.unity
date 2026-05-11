@@ -30680,6 +30680,14 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1299367078}
     - target: {fileID: 3360562300502913308, guid: 754ad70b46a243a49a2c7e93778ee016, type: 3}
+      propertyPath: possibleDrops.Array.data[1].dropChance
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 3360562300502913308, guid: 754ad70b46a243a49a2c7e93778ee016, type: 3}
+      propertyPath: possibleDrops.Array.data[2].dropChance
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 3360562300502913308, guid: 754ad70b46a243a49a2c7e93778ee016, type: 3}
       propertyPath: possibleDrops.Array.data[3].dropChance
       value: 100
       objectReference: {fileID: 0}

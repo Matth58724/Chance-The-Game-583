@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d2384f4f5c5352b4483af2faee199c16, type: 3}
-  m_Name: Pistol_Starter
+  m_Name: M4A1_AR_Uncommon
   m_EditorClassIdentifier: Assembly-CSharp::WeaponData
-  weaponName: Starter Pistol
-  weaponIcon: {fileID: 21300000, guid: 2af3a0cc387866547b1b72fadd401378, type: 3}
-  modelPrefab: {fileID: 7785790170610667721, guid: c07318f8195e16b4eaa6d9500119965e, type: 3}
-  rarity: 0
-  rarityColor: {r: 1, g: 1, b: 1, a: 0}
-  fireRate: 0.8
-  damage: 10
-  magSize: 12
-  reloadTime: 2
-  range: 50
+  weaponName: Worn M4A1
+  weaponIcon: {fileID: 21300000, guid: 5e6a734a6c4549444aed7ae43c4fb173, type: 3}
+  modelPrefab: {fileID: 4599561605382796601, guid: c38231e620cc4eb4ea8e399096c0c1c3, type: 3}
+  rarity: 1
+  rarityColor: {r: 0, g: 1, b: 0, a: 0}
+  fireRate: 0.1
+  damage: 5
+  magSize: 30
+  reloadTime: 4
+  range: 105

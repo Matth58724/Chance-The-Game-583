@@ -17,7 +17,7 @@ MonoBehaviour:
   modelPrefab: {fileID: 88317814946030486, guid: ea1ad08618ee1794b816f11a5aebd849, type: 3}
   rarity: 0
   rarityColor: {r: 1, g: 1, b: 1, a: 0}
-  fireRate: 0.5
+  fireRate: 0.8
   damage: 10
   magSize: 12
   reloadTime: 2
