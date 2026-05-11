@@ -31,6 +31,11 @@ public class MusicManager : MonoBehaviour
 
     void Update()
     {
+        // Only check if song ended when the app is focused. 
+        // Audio used to change songs when tabbing in and out
+        if (!Application.isFocused) return;
+
+
         // If the song ends then just move to the next one
         if (!audioSource.isPlaying)
         {

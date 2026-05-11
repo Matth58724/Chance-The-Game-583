@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class PlayerHealth : MonoBehaviour
 {
@@ -13,9 +14,9 @@ public class PlayerHealth : MonoBehaviour
     [SerializeField] private TextMeshProUGUI healthText; // Optional HP text label
 
     // ── HEALTH BAR COLORS ────────────────────────────────────────
-    private Color highHealthColor  = new Color(0.0f, 0.9f, 0.2f, 1f);  // Green  > 60%
-    private Color midHealthColor   = new Color(1.0f, 0.7f, 0.0f, 1f);  // Orange > 30%
-    private Color lowHealthColor   = new Color(0.9f, 0.1f, 0.1f, 1f);  // Red   <= 30%
+    private Color highHealthColor = new Color(0.0f, 0.9f, 0.2f, 1f);  // Green  > 60%
+    private Color midHealthColor = new Color(1.0f, 0.7f, 0.0f, 1f);  // Orange > 30%
+    private Color lowHealthColor = new Color(0.9f, 0.1f, 0.1f, 1f);  // Red   <= 30%
 
     // ── UNITY METHODS ────────────────────────────────────────────
 
@@ -40,6 +41,14 @@ public class PlayerHealth : MonoBehaviour
 
         if (currentHealth <= 0)
             Die();
+    }
+
+
+    // Heal player to full health
+    public void HealToFull()
+    {
+        currentHealth = maxHealth;
+        UpdateHealthUI();
     }
 
     // ── PRIVATE METHODS ──────────────────────────────────────────
@@ -70,6 +79,10 @@ public class PlayerHealth : MonoBehaviour
     void Die()
     {
         Debug.Log("Player died!");
-        // TODO: Add death screen later
+        // Unlock cursor so it can be used for the game over menu
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        // Go to Death Screen
+        SceneManager.LoadScene(2);
     }
 }
