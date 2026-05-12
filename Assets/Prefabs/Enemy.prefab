@@ -347,6 +347,8 @@ MonoBehaviour:
   - engramData: {fileID: 11400000, guid: c89cae613fa995a42976e2dcbdf1d091, type: 2}
     engramPickupPrefab: {fileID: 420575817705318147, guid: e055ad69456544546813ef5926310b01, type: 3}
     dropChance: 100
+  healthPickupPrefab: {fileID: 4497119180310931571, guid: d9b362e15de0b8e4d8b6696907c29ca4, type: 3}
+  healthDropChance: 40
 --- !u!114 &6739060394429537274
 MonoBehaviour:
   m_ObjectHideFlags: 0

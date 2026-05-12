@@ -29,6 +29,10 @@ public class EnemyHealth : MonoBehaviour
     [Header("Engram Drops")]
     public EngramDrop[] possibleDrops = new EngramDrop[5];
 
+    [Header("Health Drop")]
+    public GameObject healthPickupPrefab;
+    [Range(0, 100)] public float healthDropChance = 40f;
+
 
     void Start()
     {
@@ -81,6 +85,13 @@ public class EnemyHealth : MonoBehaviour
 
         // Destroy after 3 seconds to clean up scene
         Destroy(gameObject, 3f);
+
+        // Roll heart drop
+        if (healthPickupPrefab != null && Random.Range(0f, 100f) <= healthDropChance)
+        {
+            Vector3 heartPos = transform.position + Vector3.up * 0.5f;
+            Instantiate(healthPickupPrefab, heartPos, Quaternion.identity);
+        }
 
         // Roll each engram drop independently
         foreach (EngramDrop drop in possibleDrops)

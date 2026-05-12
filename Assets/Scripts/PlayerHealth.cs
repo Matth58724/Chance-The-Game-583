@@ -76,6 +76,12 @@ public class PlayerHealth : MonoBehaviour
         UpdateHealthUI();
     }
 
+    public void Heal(int amount)
+    {
+        currentHealth = Mathf.Min(currentHealth + amount, maxHealth);
+        UpdateHealthUI();
+    }
+
     // ── PRIVATE METHODS ──────────────────────────────────────────
 
     void PlayHitEffects()

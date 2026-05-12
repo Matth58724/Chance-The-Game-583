@@ -2069,6 +2069,8 @@ MonoBehaviour:
   - engramData: {fileID: 11400000, guid: c89cae613fa995a42976e2dcbdf1d091, type: 2}
     engramPickupPrefab: {fileID: 420575817705318147, guid: e055ad69456544546813ef5926310b01, type: 3}
     dropChance: 100
+  healthPickupPrefab: {fileID: 4497119180310931571, guid: d9b362e15de0b8e4d8b6696907c29ca4, type: 3}
+  healthDropChance: 40
 --- !u!114 &151007774
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2559,6 +2561,8 @@ MonoBehaviour:
   - engramData: {fileID: 11400000, guid: c89cae613fa995a42976e2dcbdf1d091, type: 2}
     engramPickupPrefab: {fileID: 420575817705318147, guid: e055ad69456544546813ef5926310b01, type: 3}
     dropChance: 100
+  healthPickupPrefab: {fileID: 4497119180310931571, guid: d9b362e15de0b8e4d8b6696907c29ca4, type: 3}
+  healthDropChance: 40
 --- !u!114 &170580010
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6212,6 +6216,8 @@ MonoBehaviour:
   - engramData: {fileID: 11400000, guid: c89cae613fa995a42976e2dcbdf1d091, type: 2}
     engramPickupPrefab: {fileID: 420575817705318147, guid: e055ad69456544546813ef5926310b01, type: 3}
     dropChance: 100
+  healthPickupPrefab: {fileID: 4497119180310931571, guid: d9b362e15de0b8e4d8b6696907c29ca4, type: 3}
+  healthDropChance: 40
 --- !u!114 &529760672
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7751,6 +7757,8 @@ MonoBehaviour:
   - engramData: {fileID: 11400000, guid: c89cae613fa995a42976e2dcbdf1d091, type: 2}
     engramPickupPrefab: {fileID: 420575817705318147, guid: e055ad69456544546813ef5926310b01, type: 3}
     dropChance: 100
+  healthPickupPrefab: {fileID: 4497119180310931571, guid: d9b362e15de0b8e4d8b6696907c29ca4, type: 3}
+  healthDropChance: 40
 --- !u!114 &662607312
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8727,6 +8735,8 @@ MonoBehaviour:
   - engramData: {fileID: 11400000, guid: c89cae613fa995a42976e2dcbdf1d091, type: 2}
     engramPickupPrefab: {fileID: 420575817705318147, guid: e055ad69456544546813ef5926310b01, type: 3}
     dropChance: 100
+  healthPickupPrefab: {fileID: 4497119180310931571, guid: d9b362e15de0b8e4d8b6696907c29ca4, type: 3}
+  healthDropChance: 40
 --- !u!114 &747112848
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17776,6 +17786,8 @@ MonoBehaviour:
   - engramData: {fileID: 11400000, guid: c89cae613fa995a42976e2dcbdf1d091, type: 2}
     engramPickupPrefab: {fileID: 420575817705318147, guid: e055ad69456544546813ef5926310b01, type: 3}
     dropChance: 100
+  healthPickupPrefab: {fileID: 4497119180310931571, guid: d9b362e15de0b8e4d8b6696907c29ca4, type: 3}
+  healthDropChance: 40
 --- !u!114 &1376422997
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29817,6 +29829,8 @@ MonoBehaviour:
   - engramData: {fileID: 11400000, guid: c89cae613fa995a42976e2dcbdf1d091, type: 2}
     engramPickupPrefab: {fileID: 420575817705318147, guid: e055ad69456544546813ef5926310b01, type: 3}
     dropChance: 100
+  healthPickupPrefab: {fileID: 4497119180310931571, guid: d9b362e15de0b8e4d8b6696907c29ca4, type: 3}
+  healthDropChance: 40
 --- !u!114 &2051537098
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -31455,6 +31469,10 @@ PrefabInstance:
       propertyPath: maxVisionDistance
       value: 30
       objectReference: {fileID: 0}
+    - target: {fileID: 3360562300502913308, guid: 754ad70b46a243a49a2c7e93778ee016, type: 3}
+      propertyPath: healthDropChance
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 6739060394429537274, guid: 754ad70b46a243a49a2c7e93778ee016, type: 3}
       propertyPath: shootingRange
       value: 30
@@ -31528,6 +31546,10 @@ PrefabInstance:
       propertyPath: healthText
       value: 
       objectReference: {fileID: 39978076}
+    - target: {fileID: 3021969649401452018, guid: 15eac23ac97958047bd93bc6d8b5454e, type: 3}
+      propertyPath: damageFlash
+      value: 
+      objectReference: {fileID: 1835835713}
     - target: {fileID: 3021969649401452018, guid: 15eac23ac97958047bd93bc6d8b5454e, type: 3}
       propertyPath: healthBarFill
       value: 

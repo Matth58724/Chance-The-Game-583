@@ -161,15 +161,25 @@ public class Enemy : MonoBehaviour
         agent.SetDestination(spawnPosition);
     }
 
-    void LookForPlayer()
+void LookForPlayer()
     {
         Vector3 dirToPlayer = playerTransform.position - transform.position;
+        float distToPlayer = dirToPlayer.magnitude;
 
-        if (Physics.Raycast(transform.position, dirToPlayer, out RaycastHit hit, maxVisionDistance))
+        // Raycast toward player - if anything blocks it (wall, obstacle) enemy can't see player
+        if (Physics.Raycast(transform.position, dirToPlayer.normalized, out RaycastHit hit, maxVisionDistance))
         {
-            canSeePlayer = hit.transform == playerTransform;
-            if (canSeePlayer && state != State.Attacking)
-                state = State.Chasing;
+            if (hit.transform == playerTransform)
+            {
+                canSeePlayer = true;
+                if (state == State.Patrolling || state == State.Idle)
+                    state = State.Chasing;
+            }
+            else
+            {
+                // Something is blocking line of sight
+                canSeePlayer = false;
+            }
         }
         else
         {
