@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using System.Collections.Generic;
 
@@ -34,7 +35,7 @@ void Update()
         if (isOpen) RefreshUI();
     }
 
-void RefreshUI()
+public void RefreshUI()
     {
         // Clear both grids to avoid duplicates
         foreach (Transform child in weaponGrid) Destroy(child.gameObject);
@@ -75,9 +76,24 @@ void RefreshUI()
             slot.GetComponent<InventorySlot>().SetupEngram(kvp.Value.data, kvp.Value.count);
         }
 
+        // Update section labels with capacity counts
+        UpdateLabel("WeaponLabel", "WEAPONS", playerWeaponManager.inventory.Count, playerWeaponManager.maxWeaponSlots);
+        UpdateLabel("EngramLabel", "ENGRAMS", playerWeaponManager.engramInventory.Count, playerWeaponManager.maxEngramSlots);
+
         // Force full canvas rebuild so grid layout applies correctly
         Canvas.ForceUpdateCanvases();
         UnityEngine.UI.LayoutRebuilder.ForceRebuildLayoutImmediate(weaponGrid.GetComponent<RectTransform>());
         UnityEngine.UI.LayoutRebuilder.ForceRebuildLayoutImmediate(engramGrid.GetComponent<RectTransform>());
+    }
+
+    void UpdateLabel(string labelName, string title, int current, int max)
+    {
+        var label = inventoryPanel.transform.Find(labelName);
+        if (label == null) return;
+        var tmp = label.GetComponent<TMPro.TextMeshProUGUI>();
+        if (tmp == null) return;
+        tmp.text = title + "  <size=14><color=#aaaaaa>" + current + "/" + max + "</color></size>";
+        // Turn red if full
+        tmp.color = current >= max ? new UnityEngine.Color(1f, 0.4f, 0.4f, 1f) : new UnityEngine.Color(0.8f, 0.8f, 1f, 1f);
     }
 }

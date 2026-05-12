@@ -89,7 +89,7 @@ public void CloseTerminal()
     }
 
     // Called when player clicks an engram button
-    public void OnDecodeClicked(int engramIndex)
+public void OnDecodeClicked(int engramIndex)
     {
         if (playerWeaponManager.engramInventory.Count <= engramIndex) return;
 
@@ -101,10 +101,17 @@ public void CloseTerminal()
             return;
         }
 
+        // Check weapon inventory has room BEFORE decoding
+        if (playerWeaponManager.inventory.Count >= playerWeaponManager.maxWeaponSlots)
+        {
+            ShowResult("Weapon inventory full! Discard a weapon first.");
+            return;
+        }
+
         // Decode the engram
         terminal.DecodeEngram(playerWeaponManager, engramIndex);
 
-        // Show result message
+        // Show result
         ShowResult("Decoded into: " + playerWeaponManager.inventory[playerWeaponManager.inventory.Count - 1].data.weaponName + "!");
 
         // Refresh the list

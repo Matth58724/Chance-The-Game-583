@@ -23,6 +23,7 @@ public class WeaponManager : MonoBehaviour
     // ── FULL INVENTORY ───────────────────────────────────────────
     public List<WeaponEntry> inventory = new List<WeaponEntry>();
     public WeaponData startingWeapon;
+    public int maxWeaponSlots = 3;
     private int nextUID = 0;
 
     // ── EQUIP SLOTS ──────────────────────────────────────────────
@@ -160,12 +161,19 @@ public class WeaponManager : MonoBehaviour
         Debug.Log("Assigned " + entry.data.weaponName + " [uid=" + entry.uid + "] to slot " + (slotIndex + 1));
     }
 
-    public void AddToInventory(WeaponData data)
+public void AddToInventory(WeaponData data)
     {
+        if (inventory.Count >= maxWeaponSlots)
+        {
+            Debug.Log("Weapon inventory full! Discard a weapon to make room.");
+            return;
+        }
+
         var entry = new WeaponEntry(data, nextUID++);
         inventory.Add(entry);
         Debug.Log($"Picked up: {data.weaponName} ({data.rarity})");
 
+        // Auto assign to first empty equip slot
         for (int i = 0; i < equipSlots.Length; i++)
         {
             if (equipSlots[i] == null)

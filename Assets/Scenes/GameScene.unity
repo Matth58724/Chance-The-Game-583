@@ -5529,7 +5529,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Hover a weapon and press 1, 2 or 3 to equip
+  m_text: Hover weapon + press 1/2/3 to equip  |  Left click to discard
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 0}
   m_sharedMaterial: {fileID: 0}
