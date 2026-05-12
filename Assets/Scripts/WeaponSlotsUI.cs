@@ -166,19 +166,32 @@ void BuildUI()
 
     // ── REFRESH ──────────────────────────────────────────────────
 
-    void RefreshUI()
+void RefreshUI()
     {
         if (weaponManager == null) return;
 
         for (int i = 0; i < SLOT_COUNT; i++)
         {
             bool hasWeapon = weaponManager.equipSlots[i] != null;
-            bool isActive   = i == weaponManager.currentWeaponIndex;
+            bool isActive  = i == weaponManager.currentWeaponIndex;
 
-            // Background and border colors
-            slotBgs[i].color     = !hasWeapon  ? emptyColor :
-                                    isActive    ? activeColor : inactiveColor;
-            slotBorders[i].color = isActive     ? activeBorder : inactiveBorder;
+            // Background color
+            slotBgs[i].color = !hasWeapon ? emptyColor :
+                                isActive   ? activeColor : inactiveColor;
+
+            // Border: rarity color when filled, default when empty
+            if (hasWeapon)
+            {
+                Color rc = weaponManager.equipSlots[i].data.rarityColor;
+                // Active slot: full rarity color, inactive: dimmed
+                slotBorders[i].color = isActive
+                    ? new Color(rc.r, rc.g, rc.b, 1f)
+                    : new Color(rc.r, rc.g, rc.b, 0.4f);
+            }
+            else
+            {
+                slotBorders[i].color = inactiveBorder;
+            }
 
             // Text colors
             Color textColor = (!hasWeapon || !isActive) ? inactiveText : activeText;

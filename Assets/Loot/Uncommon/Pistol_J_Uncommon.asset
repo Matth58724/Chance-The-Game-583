@@ -16,7 +16,7 @@ MonoBehaviour:
   weaponIcon: {fileID: 21300000, guid: 68983fe826b1eef459e958259019f892, type: 3}
   modelPrefab: {fileID: 88317814946030486, guid: ea1ad08618ee1794b816f11a5aebd849, type: 3}
   rarity: 1
-  rarityColor: {r: 0, g: 1, b: 0, a: 0}
+  rarityColor: {r: 0, g: 1, b: 0, a: 1}
   fireRate: 0.5
   damage: 12
   magSize: 12

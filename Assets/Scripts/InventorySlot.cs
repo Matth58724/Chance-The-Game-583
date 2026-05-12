@@ -17,11 +17,11 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     private InventoryUI inventoryUI;
     private bool isHovered = false;
     private Image bgImage;
+    private UnityEngine.UI.Outline outline;
 
     // ── COLORS ───────────────────────────────────────────────────
     private Color normalColor  = new Color(1f, 1f, 1f, 1f);
     private Color hoveredColor = new Color(0.75f, 0.9f, 1f, 1f);
-    private Color discardColor = new Color(1f, 0.4f, 0.4f, 1f); // Red tint on click
 
     // ── UNITY METHODS ────────────────────────────────────────────
 
@@ -30,6 +30,13 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         bgImage       = GetComponent<Image>();
         weaponManager = FindFirstObjectByType<WeaponManager>();
         inventoryUI   = FindFirstObjectByType<InventoryUI>();
+
+        // Add outline component for rarity border
+        outline = GetComponent<UnityEngine.UI.Outline>();
+        if (outline == null)
+            outline = gameObject.AddComponent<UnityEngine.UI.Outline>();
+        outline.effectDistance = new Vector2(3f, 3f);
+        outline.effectColor = Color.clear;
     }
 
     void Update()
@@ -56,13 +63,9 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        // Left click to discard
         if (eventData.button != PointerEventData.InputButton.Left) return;
-
-        if (weaponEntry != null)
-            DiscardWeapon();
-        else if (engramData != null)
-            DiscardEngram();
+        if (weaponEntry != null) DiscardWeapon();
+        else if (engramData != null) DiscardEngram();
     }
 
     // ── SETUP ────────────────────────────────────────────────────
@@ -76,10 +79,16 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         }
         weaponEntry = entry;
         engramData  = null;
+
         nameText.text    = entry.data.weaponName;
         iconImage.sprite = entry.data.weaponIcon;
         iconImage.color  = Color.white;
         if (stackText != null) stackText.gameObject.SetActive(false);
+
+        // Color name and border by rarity
+        Color rc = entry.data.rarityColor;
+        nameText.color = rc;
+        if (outline != null) outline.effectColor = rc;
     }
 
     public void SetupEngram(EngramData data, int count = 1)
@@ -87,10 +96,17 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         if (data == null) { Debug.LogError("Slot received NULL EngramData!"); return; }
         weaponEntry = null;
         engramData  = data;
-        nameText.text = data.engramName;
+
+        nameText.text  = data.engramName;
+        nameText.color = Color.white;
+
         if (data.engramIcon != null) { iconImage.sprite = data.engramIcon; iconImage.color = Color.white; }
         else { iconImage.sprite = null; iconImage.color = data.engramColor; }
+
         if (stackText != null) { stackText.gameObject.SetActive(count > 1); stackText.text = "x" + count; }
+
+        // No rarity border for engrams
+        if (outline != null) outline.effectColor = Color.clear;
     }
 
     // ── PRIVATE METHODS ──────────────────────────────────────────
@@ -105,12 +121,10 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     {
         if (weaponManager == null || weaponEntry == null) return;
 
-        // Remove from equip slots if currently equipped
         for (int i = 0; i < weaponManager.equipSlots.Length; i++)
             if (weaponManager.equipSlots[i] == weaponEntry)
             {
                 weaponManager.equipSlots[i] = null;
-                // If this was the active slot, clear the weapon model
                 if (i == weaponManager.currentWeaponIndex)
                 {
                     foreach (Transform child in weaponManager.weaponHolder)
@@ -119,25 +133,16 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
                 }
             }
 
-        // Remove from inventory
         weaponManager.inventory.Remove(weaponEntry);
-
         Debug.Log("Discarded: " + weaponEntry.data.weaponName);
-
-        // Refresh inventory UI
         if (inventoryUI != null) inventoryUI.RefreshUI();
     }
 
     void DiscardEngram()
     {
         if (weaponManager == null || engramData == null) return;
-
-        // Remove one instance of this engram
         weaponManager.engramInventory.Remove(engramData);
-
         Debug.Log("Discarded: " + engramData.engramName);
-
-        // Refresh inventory UI
         if (inventoryUI != null) inventoryUI.RefreshUI();
     }
 }
