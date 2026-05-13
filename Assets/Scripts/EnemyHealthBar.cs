@@ -7,11 +7,12 @@ public class EnemyHealthBar : MonoBehaviour
     [SerializeField] private float barWidth = 1.5f;
     [SerializeField] private float barHeight = 0.15f;
 
+
     // ── HEALTH BAR COLORS ────────────────────────────────────────
     private Color highHealthColor = new Color(0.0f, 0.9f, 0.2f, 1f);
-    private Color midHealthColor  = new Color(1.0f, 0.7f, 0.0f, 1f);
-    private Color lowHealthColor  = new Color(0.9f, 0.1f, 0.1f, 1f);
-    private Color bgColor         = new Color(0.15f, 0.15f, 0.15f, 1f);
+    private Color midHealthColor = new Color(1.0f, 0.7f, 0.0f, 1f);
+    private Color lowHealthColor = new Color(0.9f, 0.1f, 0.1f, 1f);
+    private Color bgColor = new Color(0.15f, 0.15f, 0.15f, 1f);
 
     // ── PRIVATE REFS ─────────────────────────────────────────────
     private EnemyHealth enemyHealth;
@@ -32,7 +33,7 @@ public class EnemyHealthBar : MonoBehaviour
         BuildHealthBar();
     }
 
-void LateUpdate()
+    void LateUpdate()
     {
         if (bgQuad == null) return;
 

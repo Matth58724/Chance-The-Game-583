@@ -2021,6 +2021,7 @@ MonoBehaviour:
   offset: {x: 0, y: 2.5, z: 0}
   barWidth: 1.5
   barHeight: 0.15
+  unlitShader: {fileID: 0}
 --- !u!114 &151007772
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2052,7 +2053,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyHealth
   maxHealth: 100
   currentHealth: 0
-  hitMat: {fileID: 2100000, guid: 139670a6b39836a4daafdcfe91411e88, type: 2}
+  hitMat: {fileID: 2100000, guid: a6b8a48448204714da14f2147e0b8216, type: 2}
   possibleDrops:
   - engramData: {fileID: 11400000, guid: 097663be4c75fbc438f0f134a002f6a1, type: 2}
     engramPickupPrefab: {fileID: 3942438488855455635, guid: 3f83ba0f575f1244494577f017873d2e, type: 3}
@@ -2513,6 +2514,7 @@ MonoBehaviour:
   offset: {x: 0, y: 2.5, z: 0}
   barWidth: 1.5
   barHeight: 0.15
+  unlitShader: {fileID: 0}
 --- !u!114 &170580008
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2544,7 +2546,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyHealth
   maxHealth: 100
   currentHealth: 0
-  hitMat: {fileID: 2100000, guid: 139670a6b39836a4daafdcfe91411e88, type: 2}
+  hitMat: {fileID: 2100000, guid: a6b8a48448204714da14f2147e0b8216, type: 2}
   possibleDrops:
   - engramData: {fileID: 11400000, guid: 097663be4c75fbc438f0f134a002f6a1, type: 2}
     engramPickupPrefab: {fileID: 3942438488855455635, guid: 3f83ba0f575f1244494577f017873d2e, type: 3}
@@ -3750,6 +3752,10 @@ PrefabInstance:
       propertyPath: 'patrolPoints.Array.data[3]'
       value: 
       objectReference: {fileID: 2010817309}
+    - target: {fileID: 3360562300502913308, guid: 754ad70b46a243a49a2c7e93778ee016, type: 3}
+      propertyPath: hitMat
+      value: 
+      objectReference: {fileID: 2100000, guid: a6b8a48448204714da14f2147e0b8216, type: 2}
     - target: {fileID: 3360562300502913308, guid: 754ad70b46a243a49a2c7e93778ee016, type: 3}
       propertyPath: possibleDrops.Array.data[0].dropChance
       value: 100
@@ -6168,6 +6174,7 @@ MonoBehaviour:
   offset: {x: 0, y: 2.5, z: 0}
   barWidth: 1.5
   barHeight: 0.15
+  unlitShader: {fileID: 0}
 --- !u!114 &529760670
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6199,7 +6206,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyHealth
   maxHealth: 100
   currentHealth: 0
-  hitMat: {fileID: 2100000, guid: 139670a6b39836a4daafdcfe91411e88, type: 2}
+  hitMat: {fileID: 2100000, guid: a6b8a48448204714da14f2147e0b8216, type: 2}
   possibleDrops:
   - engramData: {fileID: 11400000, guid: 097663be4c75fbc438f0f134a002f6a1, type: 2}
     engramPickupPrefab: {fileID: 3942438488855455635, guid: 3f83ba0f575f1244494577f017873d2e, type: 3}
@@ -7709,6 +7716,7 @@ MonoBehaviour:
   offset: {x: 0, y: 2.5, z: 0}
   barWidth: 1.5
   barHeight: 0.15
+  unlitShader: {fileID: 0}
 --- !u!114 &662607310
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7740,7 +7748,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyHealth
   maxHealth: 100
   currentHealth: 0
-  hitMat: {fileID: 2100000, guid: 139670a6b39836a4daafdcfe91411e88, type: 2}
+  hitMat: {fileID: 2100000, guid: a6b8a48448204714da14f2147e0b8216, type: 2}
   possibleDrops:
   - engramData: {fileID: 11400000, guid: 097663be4c75fbc438f0f134a002f6a1, type: 2}
     engramPickupPrefab: {fileID: 3942438488855455635, guid: 3f83ba0f575f1244494577f017873d2e, type: 3}
@@ -8687,6 +8695,7 @@ MonoBehaviour:
   offset: {x: 0, y: 2.5, z: 0}
   barWidth: 1.5
   barHeight: 0.15
+  unlitShader: {fileID: 0}
 --- !u!114 &747112846
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8718,7 +8727,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyHealth
   maxHealth: 100
   currentHealth: 0
-  hitMat: {fileID: 2100000, guid: 139670a6b39836a4daafdcfe91411e88, type: 2}
+  hitMat: {fileID: 2100000, guid: a6b8a48448204714da14f2147e0b8216, type: 2}
   possibleDrops:
   - engramData: {fileID: 11400000, guid: 097663be4c75fbc438f0f134a002f6a1, type: 2}
     engramPickupPrefab: {fileID: 3942438488855455635, guid: 3f83ba0f575f1244494577f017873d2e, type: 3}
@@ -11693,6 +11702,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1755578871}
     - target: {fileID: 3360562300502913308, guid: 754ad70b46a243a49a2c7e93778ee016, type: 3}
+      propertyPath: hitMat
+      value: 
+      objectReference: {fileID: 2100000, guid: a6b8a48448204714da14f2147e0b8216, type: 2}
+    - target: {fileID: 3360562300502913308, guid: 754ad70b46a243a49a2c7e93778ee016, type: 3}
       propertyPath: possibleDrops.Array.data[0].dropChance
       value: 100
       objectReference: {fileID: 0}
@@ -11868,6 +11881,10 @@ PrefabInstance:
       propertyPath: 'patrolPoints.Array.data[3]'
       value: 
       objectReference: {fileID: 1755578871}
+    - target: {fileID: 3360562300502913308, guid: 754ad70b46a243a49a2c7e93778ee016, type: 3}
+      propertyPath: hitMat
+      value: 
+      objectReference: {fileID: 2100000, guid: a6b8a48448204714da14f2147e0b8216, type: 2}
     - target: {fileID: 3360562300502913308, guid: 754ad70b46a243a49a2c7e93778ee016, type: 3}
       propertyPath: possibleDrops.Array.data[0].dropChance
       value: 100
@@ -17738,6 +17755,7 @@ MonoBehaviour:
   offset: {x: 0, y: 2.5, z: 0}
   barWidth: 1.5
   barHeight: 0.15
+  unlitShader: {fileID: 0}
 --- !u!114 &1376422995
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17769,7 +17787,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyHealth
   maxHealth: 100
   currentHealth: 0
-  hitMat: {fileID: 2100000, guid: 139670a6b39836a4daafdcfe91411e88, type: 2}
+  hitMat: {fileID: 2100000, guid: a6b8a48448204714da14f2147e0b8216, type: 2}
   possibleDrops:
   - engramData: {fileID: 11400000, guid: 097663be4c75fbc438f0f134a002f6a1, type: 2}
     engramPickupPrefab: {fileID: 3942438488855455635, guid: 3f83ba0f575f1244494577f017873d2e, type: 3}
@@ -21699,6 +21717,10 @@ PrefabInstance:
       propertyPath: 'patrolPoints.Array.data[3]'
       value: 
       objectReference: {fileID: 1755578871}
+    - target: {fileID: 3360562300502913308, guid: 754ad70b46a243a49a2c7e93778ee016, type: 3}
+      propertyPath: hitMat
+      value: 
+      objectReference: {fileID: 2100000, guid: a6b8a48448204714da14f2147e0b8216, type: 2}
     - target: {fileID: 3360562300502913308, guid: 754ad70b46a243a49a2c7e93778ee016, type: 3}
       propertyPath: possibleDrops.Array.data[0].dropChance
       value: 100
@@ -29781,6 +29803,7 @@ MonoBehaviour:
   offset: {x: 0, y: 2.5, z: 0}
   barWidth: 1.5
   barHeight: 0.15
+  unlitShader: {fileID: 0}
 --- !u!114 &2051537096
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29812,7 +29835,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyHealth
   maxHealth: 100
   currentHealth: 0
-  hitMat: {fileID: 2100000, guid: 139670a6b39836a4daafdcfe91411e88, type: 2}
+  hitMat: {fileID: 2100000, guid: a6b8a48448204714da14f2147e0b8216, type: 2}
   possibleDrops:
   - engramData: {fileID: 11400000, guid: 097663be4c75fbc438f0f134a002f6a1, type: 2}
     engramPickupPrefab: {fileID: 3942438488855455635, guid: 3f83ba0f575f1244494577f017873d2e, type: 3}
@@ -30099,6 +30122,10 @@ PrefabInstance:
       propertyPath: 'patrolPoints.Array.data[3]'
       value: 
       objectReference: {fileID: 1755578871}
+    - target: {fileID: 3360562300502913308, guid: 754ad70b46a243a49a2c7e93778ee016, type: 3}
+      propertyPath: hitMat
+      value: 
+      objectReference: {fileID: 2100000, guid: a6b8a48448204714da14f2147e0b8216, type: 2}
     - target: {fileID: 3360562300502913308, guid: 754ad70b46a243a49a2c7e93778ee016, type: 3}
       propertyPath: possibleDrops.Array.data[0].dropChance
       value: 100
@@ -31469,6 +31496,10 @@ PrefabInstance:
       propertyPath: maxVisionDistance
       value: 30
       objectReference: {fileID: 0}
+    - target: {fileID: 3360562300502913308, guid: 754ad70b46a243a49a2c7e93778ee016, type: 3}
+      propertyPath: hitMat
+      value: 
+      objectReference: {fileID: 2100000, guid: a6b8a48448204714da14f2147e0b8216, type: 2}
     - target: {fileID: 3360562300502913308, guid: 754ad70b46a243a49a2c7e93778ee016, type: 3}
       propertyPath: healthDropChance
       value: 100

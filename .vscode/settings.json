@@ -67,5 +67,5 @@
         "*.sln": "*.csproj",
         "*.slnx": "*.csproj"
     },
-    "dotnet.defaultSolution": "Chance-The-Game-583.slnx"
+    "dotnet.defaultSolution": "Chance-583.slnx"
 }
